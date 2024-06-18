@@ -1,3 +1,3 @@
 # Use-case diagram
 
-![Use-case-MindMap](Use-case%20diagram/Communication%20Subsystem-Mindmap.png)
+![Use-case-MindMap](Communication%20Subsystem-Mindmap.png)
