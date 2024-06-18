@@ -2,7 +2,7 @@
 
 # **A. High Level Sales Analysis**
 
-**1. What was the total quantity sold for all products?**
+**1 - What was the total quantity sold for all products?**
 
 ```sql
 SELECT 
@@ -13,7 +13,7 @@ JOIN product_details AS pd ON pd.product_id = s.prod_id
 GROUP BY product_name
 ```
 
-**2. What is the total generated revenue for all products before discounts?**
+**2 - What is the total generated revenue for all products before discounts?**
 
 ```sql
 SELECT
@@ -24,7 +24,7 @@ JOIN product_details AS pd ON pd.product_id = s.prod_id
 GROUP BY product_name
 ```
 
-**3. What was the total discount amount for all products?**
+**3 - What was the total discount amount for all products?**
 
 ```sql
 SELECT 
@@ -38,7 +38,7 @@ GROUP BY product_name
 
 # **B. Transaction Analysis**
 
-**1. How many unique transactions were there?**
+**1 - How many unique transactions were there?**
 
 ```sql
 SELECT 
@@ -47,7 +47,7 @@ FROM sales
 
 ```
 
-**2. What is the average unique products purchased in each transaction?**
+**2 - What is the average unique products purchased in each transaction?**
 
 ```sql
 SELECT
@@ -55,7 +55,7 @@ SELECT
 FROM sales AS s
 ```
 
-**3. What are the 25th, 50th and 75th percentile values for the revenue per transaction?**
+**3 - What are the 25th, 50th and 75th percentile values for the revenue per transaction?**
 
 ```sql
 WITH revenue_quartiles AS (
@@ -72,7 +72,7 @@ SELECT
 FROM revenue_quartiles;
 ```
 
-**4. What is the average discount value per transaction?**
+**4 - What is the average discount value per transaction?**
 
 ```sql
 SELECT
@@ -80,7 +80,7 @@ SELECT
 FROM sales
 ```
 
-**5. What is the percentage split of all transactions for members vs non-members?**
+**5 - What is the percentage split of all transactions for members vs non-members?**
 
 ```sql
 SELECT
@@ -89,7 +89,7 @@ SELECT
 FROM sales
 ```
 
-**6. What is the average revenue for member transactions and non-member transactions?**
+**6 - What is the average revenue for member transactions and non-member transactions?**
 
 ```sql
 SELECT
@@ -100,7 +100,7 @@ FROM sales
 
 # **C. Product Analysis**
 
-**1. What are the top 3 products by total revenue before discount?**
+**1 - What are the top 3 products by total revenue before discount?**
 
 ```sql
 SELECT
@@ -113,7 +113,7 @@ ORDER BY total_revenue DESC
 LIMIT 3
 ```
 
-**2. What is the total quantity, revenue and discount for each segment?**
+**2 - What is the total quantity, revenue and discount for each segment?**
 
 ```sql
 SELECT
@@ -127,7 +127,7 @@ GROUP BY segment_name;
 
 ```
 
-**3. What is the top selling product for each segment?**
+**3 - What is the top selling product for each segment?**
 
 ```sql
 SELECT
@@ -147,7 +147,7 @@ WHERE ranking = 1
 
 ```
 
-**4. What is the total quantity, revenue and discount for each category?**
+**4 - What is the total quantity, revenue and discount for each category?**
 
 ```sql
 SELECT
@@ -161,7 +161,7 @@ GROUP BY category_name;
 
 ```
 
-**5. What is the top selling product for each category?**
+**5 - What is the top selling product for each category?**
 
 ```sql
 SELECT
@@ -181,7 +181,7 @@ WHERE ranking = 1
 
 ```
 
-**6. What is the percentage split of revenue by product for each segment?**
+**6 - What is the percentage split of revenue by product for each segment?**
 
 ```sql
 WITH total_revenue_segment AS
@@ -203,7 +203,7 @@ ORDER BY pd.segment_name
 
 ```
 
-**7. What is the percentage split of revenue by segment for each category?**
+**7 - What is the percentage split of revenue by segment for each category?**
 
 ```sql
 WITH total_revenue_category AS
@@ -225,7 +225,7 @@ ORDER BY pd.category_name
 
 ```
 
-**8. What is the percentage split of total revenue by category?**
+**8 - What is the percentage split of total revenue by category?**
 
 ```sql
 
@@ -237,7 +237,7 @@ JOIN product_details AS pd ON pd.product_id = s.prod_id
 GROUP BY category_name
 ```
 
-**9. What is the total transaction “penetration” for each product? (hint: penetration = number of transactions where at least 1 quantity of a product was purchased divided by total number of transactions)**
+**9 - What is the total transaction “penetration” for each product? (hint: penetration = number of transactions where at least 1 quantity of a product was purchased divided by total number of transactions)**
 
 ```sql
 WITH count_prod_trans AS
@@ -254,7 +254,7 @@ SELECT
 FROM count_prod_trans
 ```
 
-**10. What is the most common combination of at least 1 quantity of any 3 products in a 1 single transaction?**
+**10 - What is the most common combination of at least 1 quantity of any 3 products in a 1 single transaction?**
 
 ```sql
 

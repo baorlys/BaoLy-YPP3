@@ -2,7 +2,7 @@
 
 # **A. Digital Analysis**
 
-**1. How many users are there?**
+**1 - How many users are there?**
 
 ```sql
 SELECT
@@ -10,7 +10,7 @@ SELECT
 FROM users
 ```
 
-**2. How many cookies does each user have on average?**
+**2 - How many cookies does each user have on average?**
 
 ```sql
 SELECT 
@@ -23,7 +23,7 @@ FROM users
 GROUP BY user_id) AS sub
 ```
 
-**3. What is the unique number of visits by all users per month?**
+**3 - What is the unique number of visits by all users per month?**
 
 ```sql
 SELECT 
@@ -33,7 +33,7 @@ FROM events
 GROUP BY calendar_month
 ```
 
-**4. What is the number of events for each event type?**
+**4 - What is the number of events for each event type?**
 
 ```sql
 SELECT 
@@ -43,7 +43,7 @@ FROM events
 GROUP BY event_type
 ```
 
-**5. What is the percentage of visits which have a purchase event?**
+**5 - What is the percentage of visits which have a purchase event?**
 
 ```sql
 SELECT
@@ -53,7 +53,7 @@ JOIN event_identifier AS ei ON e.event_type = ei.event_type
 WHERE event_name = 'Purchase'
 ```
 
-**6. What is the percentage of visits which view the checkout page but do not have a purchase event?** 
+**6 - What is the percentage of visits which view the checkout page but do not have a purchase event?** 
 
 ```sql
 SELECT ROUND((1 - SUM(purchase_count)/SUM(view_checkout_count) ) * 100,2) AS percentage
@@ -69,7 +69,7 @@ GROUP BY visit_id
 ) as x
 ```
 
-**7. What are the top 3 pages by number of views?**
+**7 - What are the top 3 pages by number of views?**
 
 ```sql
 SELECT
@@ -84,7 +84,7 @@ ORDER BY view_count DESC
 LIMIT 3
 ```
 
-**8. What is the number of views and cart adds for each product category?**
+**8 - What is the number of views and cart adds for each product category?**
 
 ```sql
 SELECT
@@ -99,7 +99,7 @@ GROUP BY product_category
 ORDER BY view_count DESC
 ```
 
-**9. What are the top 3 products by purchases?**
+**9 - What are the top 3 products by purchases?**
 
 ```sql
 WITH check_purchase AS
@@ -129,7 +129,7 @@ Using a single SQL query - create a new output table which has the following det
 3. How many times was each product added to a cart but not purchased (abandoned)?
 4. How many times was each product purchased?
 
-![Untitled](attachment/ct6.png)
+![Untitled](attachment/cs6.png)
 
 ```sql
 CREATE VIEW product_analysis AS
@@ -178,7 +178,7 @@ WHERE product_id IS NOT NULL
 GROUP BY product_category
 ```
 
-**1. Which product had the most views, cart adds and purchases?**
+**1 - Which product had the most views, cart adds and purchases?**
 
 ```sql
 SELECT 
@@ -188,7 +188,7 @@ ORDER BY views DESC,cart_adds DESC,purchased DESC
 
 ```
 
-**2. Which product was most likely to be abandoned?**
+**2 - Which product was most likely to be abandoned?**
 
 ```sql
 SELECT 
@@ -199,7 +199,7 @@ LIMIT 1
 
 ```
 
-**3. Which product had the highest view to purchase percentage?**
+**3 - Which product had the highest view to purchase percentage?**
 
 ```sql
 SELECT 
@@ -212,7 +212,7 @@ ORDER BY percentage DESC
 LIMIT 1
 ```
 
-**4. What is the average conversion rate from view to cart add?**
+**4 - What is the average conversion rate from view to cart add?**
 
 ```sql
 SELECT 
@@ -221,7 +221,7 @@ FROM product_analysis
 ORDER BY percentage 
 ```
 
-**5. What is the average conversion rate from cart add to purchase?**
+**5 - What is the average conversion rate from cart add to purchase?**
 
 ```sql
 SELECT 

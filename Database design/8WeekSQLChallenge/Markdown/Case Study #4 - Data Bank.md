@@ -2,7 +2,7 @@
 
 # **A. Customer Nodes Exploration**
 
-**1. How many unique nodes are there on the Data Bank system?**
+**1 - How many unique nodes are there on the Data Bank system?**
 
 ```sql
 SELECT 
@@ -10,7 +10,7 @@ SELECT
 FROM customer_nodes
 ```
 
-**2. What is the number of nodes per region?**
+**2 - What is the number of nodes per region?**
 
 ```sql
 SELECT 
@@ -22,7 +22,7 @@ JOIN regions AS r ON cn.region_id = r.region_id
 GROUP BY cn.region_id, region_name
 ```
 
-**3. How many customers are allocated to each region?**
+**3 - How many customers are allocated to each region?**
 
 ```sql
 SELECT 
@@ -33,7 +33,7 @@ GROUP BY region_id
 ORDER BY region_id
 ```
 
-**4. How many days on average are customers reallocated to a different node?**
+**4 - How many days on average are customers reallocated to a different node?**
 
 ```sql
 SELECT ROUND(AVG(avg_day)) as avg_node_reallocation_days
@@ -46,7 +46,7 @@ FROM (
 
 ```
 
-**5. What is the median, 80th and 95th percentile for this same reallocation days metric for each region?**
+**5 - What is the median, 80th and 95th percentile for this same reallocation days metric for each region?**
 
 ```sql
 CREATE VIEW avg_day_reallocation AS (
@@ -85,7 +85,7 @@ WHERE quartile = 19;
 
 # **B. Customer Transactions**
 
-**1. What is the unique count and total amount for each transaction type?**
+**1 - What is the unique count and total amount for each transaction type?**
 
 ```sql
 SELECT
@@ -96,7 +96,7 @@ FROM customer_transactions
 GROUP BY txn_type
 ```
 
-**2. What is the average total historical deposit counts and amounts for all customers?**
+**2 - What is the average total historical deposit counts and amounts for all customers?**
 
 ```sql
 SELECT
@@ -112,7 +112,7 @@ FROM
 	GROUP BY customer_id) as sub
 ```
 
-**3. For each month - how many Data Bank customers make more than 1 deposit and either 1 purchase or 1 withdrawal in a single month?**
+**3 - For each month - how many Data Bank customers make more than 1 deposit and either 1 purchase or 1 withdrawal in a single month?**
 
 ```sql
 SELECT 
@@ -130,7 +130,7 @@ WHERE deposit_count > 1 and purchase_or_withdrawal_count >=1
 GROUP BY monthview
 ```
 
-**4. What is the closing balance for each customer at the end of the month? Also show the change in balance each month in the same table output.**
+**4 - What is the closing balance for each customer at the end of the month? Also show the change in balance each month in the same table output.**
 
 ```sql
 SELECT
@@ -154,7 +154,7 @@ FROM
 
 ```
 
-**5. Comparing the closing balance of a customer’s first month and the closing balance from their second nth, what percentage of customers:**
+**5 - Comparing the closing balance of a customer’s first month and the closing balance from their second nth, what percentage of customers:**
 
 - **What percentage of customers have a negative first month balance? What percentage of customers have a positive first month balance?**
 
