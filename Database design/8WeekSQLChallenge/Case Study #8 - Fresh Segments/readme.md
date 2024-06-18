@@ -355,4 +355,4 @@ GROUP BY month_year;
 
 ---
 
-[**Case Study #1 - Danny's Diner**](Case%20Study%20%231%20-%20Danny's%20Diner)
+[**Case Study #1 - Danny's Diner**](../Case%20Study%20%231%20-%20Danny's%20Diner)

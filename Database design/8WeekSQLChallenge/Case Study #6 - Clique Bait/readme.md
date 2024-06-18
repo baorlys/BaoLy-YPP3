@@ -274,3 +274,7 @@ GROUP BY
     purchase,
     campaign_name
 ```
+
+---
+
+[**Case Study #7 - Balanced Tree**](../Case%20Study%20%237%20-%20Balanced%20Tree)

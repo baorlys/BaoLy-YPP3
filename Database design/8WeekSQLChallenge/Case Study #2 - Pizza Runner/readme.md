@@ -428,4 +428,4 @@ LIMIT 1
 
 ---
 
-[**Case Study #3 - Foodie-Fi**](Case%20Study%20%233%20-%20Foodie-Fi)
+[**Case Study #3 - Foodie-Fi**](../Case%20Study%20%233%20-%20Foodie-Fi)

@@ -235,4 +235,4 @@ WHERE sequence = 1 AND ending_balance > 0 AND following_balance < 0
 
 ---
 
-[**Case Study #5 - Data Mart**](Case%20Study%20%235%20-%20Data%20Mart)
+[**Case Study #5 - Data Mart**](../Case%20Study%20%235%20-%20Data%20Mart)

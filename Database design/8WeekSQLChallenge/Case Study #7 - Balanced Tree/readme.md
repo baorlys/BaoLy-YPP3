@@ -262,4 +262,4 @@ FROM count_prod_trans
 
 ---
 
-[**Case Study #7 - Balanced Tree**](Case%20Study%20%237%20-%20Balanced%20Tree)
+[**Case Study #8 - Fresh Segments**](../Case%20Study%20%238%20-%20Fresh%20Segments)

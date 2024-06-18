@@ -290,4 +290,4 @@ LIMIT 1
 
 ---
 
-[**Case Study #6 - Clique Bait**](Case%20Study%20%236%20-%20Clique%20Bait)
+[**Case Study #6 - Clique Bait**](../Case%20Study%20%236%20-%20Clique%20Bait)

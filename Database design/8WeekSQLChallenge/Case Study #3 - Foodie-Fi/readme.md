@@ -170,4 +170,4 @@ WHERE plan_id = 2 and previous_plan = 3
 
 ---
 
-[**Case Study #4 - Data Bank**](Case%20Study%20%234%20-%20Data%20Bank)
+[**Case Study #4 - Data Bank**](../Case%20Study%20%234%20-%20Data%20Bank)
