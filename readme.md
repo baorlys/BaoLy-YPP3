@@ -1,5 +1,7 @@
 # MentorHub Project
 
+![MentorHub](MentorHub_High.png)
+
 [**8 Week SQL Challenge**](Database%20design/8WeekSQLChallenge)
 
 [**Database design**](Database%20design)

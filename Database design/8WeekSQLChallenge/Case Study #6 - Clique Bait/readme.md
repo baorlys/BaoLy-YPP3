@@ -13,7 +13,7 @@ FROM users
 **2 - How many cookies does each user have on average?**
 
 ```sql
-SELECT 
+SELECT
 	ROUND(AVG(cookie_count)) AS avg_cookie
 FROM
 (SELECT
@@ -26,7 +26,7 @@ GROUP BY user_id) AS sub
 **3 - What is the unique number of visits by all users per month?**
 
 ```sql
-SELECT 
+SELECT
 	MONTH(event_time) as calendar_month,
     COUNT(DISTINCT visit_id) as visit_count
 FROM events
@@ -36,7 +36,7 @@ GROUP BY calendar_month
 **4 - What is the number of events for each event type?**
 
 ```sql
-SELECT 
+SELECT
 	event_type,
     COUNT(*) as event_count
 FROM events
@@ -53,12 +53,12 @@ JOIN event_identifier AS ei ON e.event_type = ei.event_type
 WHERE event_name = 'Purchase'
 ```
 
-**6 - What is the percentage of visits which view the checkout page but do not have a purchase event?** 
+**6 - What is the percentage of visits which view the checkout page but do not have a purchase event?**
 
 ```sql
 SELECT ROUND((1 - SUM(purchase_count)/SUM(view_checkout_count) ) * 100,2) AS percentage
 FROM
-(SELECT 
+(SELECT
 	visit_id,
     SUM(IF(event_name = 'Page View' AND page_name = 'Checkout',1,0)) AS view_checkout_count,
     SUM(IF(event_name = 'Purchase',1,0)) AS purchase_count
@@ -111,7 +111,7 @@ SELECT
 	page_name,
     SUM(IF(event_name = 'Add to Cart',1,0)) AS purchase_count
 FROM events as e
-LEFT JOIN check_purchase AS cp ON cp.visit_id = e.visit_id 
+LEFT JOIN check_purchase AS cp ON cp.visit_id = e.visit_id
 JOIN event_identifier AS ei ON ei.event_type = e.event_type
 JOIN page_hierarchy AS ph ON ph.page_id = e.page_id
 WHERE product_id IS NOT NULL
@@ -129,7 +129,7 @@ Using a single SQL query - create a new output table which has the following det
 3. How many times was each product added to a cart but not purchased (abandoned)?
 4. How many times was each product purchased?
 
-![Untitled](attachment/cs6.png)
+![Description](attachment/cs6.png)
 
 ```sql
 CREATE VIEW product_analysis AS
@@ -148,11 +148,11 @@ SELECT
     SUM(IF(event_name = 'Add to Cart' and is_purchase IS NULL,1,0)) AS abandoned,
     SUM(IF(event_name = 'Add to Cart' and is_purchase = 1,1,0)) AS purchased
 FROM events as e
-LEFT JOIN check_purchase AS cp ON cp.visit_id = e.visit_id 
+LEFT JOIN check_purchase AS cp ON cp.visit_id = e.visit_id
 JOIN event_identifier AS ei ON ei.event_type = e.event_type
 JOIN page_hierarchy AS ph ON ph.page_id = e.page_id
 WHERE product_id IS NOT NULL
-GROUP BY product_id,page_name,product_category 
+GROUP BY product_id,page_name,product_category
 ```
 
 Additionally, create another table which further aggregates the data for the above points but this time for each product category instead of individual products.
@@ -171,7 +171,7 @@ SELECT
     SUM(IF(event_name = 'Add to Cart' and is_purchase IS NULL,1,0)) AS abandoned,
     SUM(IF(event_name = 'Add to Cart' and is_purchase = 1,1,0)) AS purchased
 FROM events as e
-LEFT JOIN check_purchase AS cp ON cp.visit_id = e.visit_id 
+LEFT JOIN check_purchase AS cp ON cp.visit_id = e.visit_id
 JOIN event_identifier AS ei ON ei.event_type = e.event_type
 JOIN page_hierarchy AS ph ON ph.page_id = e.page_id
 WHERE product_id IS NOT NULL
@@ -181,7 +181,7 @@ GROUP BY product_category
 **1 - Which product had the most views, cart adds and purchases?**
 
 ```sql
-SELECT 
+SELECT
 	*
 FROM product_analysis
 ORDER BY views DESC,cart_adds DESC,purchased DESC
@@ -191,7 +191,7 @@ ORDER BY views DESC,cart_adds DESC,purchased DESC
 **2 - Which product was most likely to be abandoned?**
 
 ```sql
-SELECT 
+SELECT
 	*
 FROM product_analysis
 ORDER BY abandoned DESC
@@ -202,7 +202,7 @@ LIMIT 1
 **3 - Which product had the highest view to purchase percentage?**
 
 ```sql
-SELECT 
+SELECT
 	product_id,
     product_category,
     page_name,
@@ -215,19 +215,19 @@ LIMIT 1
 **4 - What is the average conversion rate from view to cart add?**
 
 ```sql
-SELECT 
+SELECT
 	ROUND(AVG(cart_adds/views * 100),2)AS percentage
 FROM product_analysis
-ORDER BY percentage 
+ORDER BY percentage
 ```
 
 **5 - What is the average conversion rate from cart add to purchase?**
 
 ```sql
-SELECT 
+SELECT
 	ROUND(AVG(purchased/cart_adds * 100),2)AS percentage
 FROM product_analysis
-ORDER BY percentage 
+ORDER BY percentage
 ```
 
 # **C. Campaigns Analysis**
@@ -267,7 +267,7 @@ FROM subtable AS s
 JOIN users AS u ON u.cookie_id = s.cookie_id
 JOIN page_hierarchy AS ph ON ph.page_id = s.page_id
 LEFT JOIN campaign_identifier AS ci on s.event_time BETWEEN ci.start_date AND ci.end_date
-GROUP BY 
+GROUP BY
 	visit_id,
     user_id,
     visit_start_time,
