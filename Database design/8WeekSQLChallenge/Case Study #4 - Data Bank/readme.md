@@ -5,7 +5,7 @@
 **1 - How many unique nodes are there on the Data Bank system?**
 
 ```sql
-SELECT 
+SELECT
 	COUNT(DISTINCT node_id) as unique_nodes_count
 FROM customer_nodes
 ```
@@ -13,7 +13,7 @@ FROM customer_nodes
 **2 - What is the number of nodes per region?**
 
 ```sql
-SELECT 
+SELECT
 	cn.region_id,
     region_name,
     COUNT(DISTINCT node_id)
@@ -25,10 +25,10 @@ GROUP BY cn.region_id, region_name
 **3 - How many customers are allocated to each region?**
 
 ```sql
-SELECT 
+SELECT
     region_id,
     COUNT(*)
-FROM customer_nodes 
+FROM customer_nodes
 GROUP BY region_id
 ORDER BY region_id
 ```
@@ -58,26 +58,26 @@ SELECT
 	GROUP BY region_id,customer_id,node_id
 );
 SELECT MAX(avg_day) as median
-FROM 
-	(SELECT 
+FROM
+	(SELECT
 		avg_day,
-		NTILE(4) OVER(ORDER BY avg_day) AS quartile 
+		NTILE(4) OVER(ORDER BY avg_day) AS quartile
 	FROM avg_day_reallocation) as sub
 WHERE quartile = 2;
 
 SELECT MAX(avg_day) as percentile_80
-FROM 
-	(SELECT 
+FROM
+	(SELECT
 		avg_day,
-		NTILE(5) OVER(ORDER BY avg_day) AS quartile 
+		NTILE(5) OVER(ORDER BY avg_day) AS quartile
 	FROM avg_day_reallocation) as sub
 WHERE quartile = 4;
 
 SELECT MAX(avg_day) as percentile_95
-FROM 
-	(SELECT 
+FROM
+	(SELECT
 		avg_day,
-		NTILE(20) OVER(ORDER BY avg_day) AS quartile 
+		NTILE(20) OVER(ORDER BY avg_day) AS quartile
 	FROM avg_day_reallocation) as sub
 WHERE quartile = 19;
 
@@ -115,7 +115,7 @@ FROM
 **3 - For each month - how many Data Bank customers make more than 1 deposit and either 1 purchase or 1 withdrawal in a single month?**
 
 ```sql
-SELECT 
+SELECT
 	monthview,
     COUNT(DISTINCT customer_id) as customer_count
 FROM
@@ -136,14 +136,14 @@ GROUP BY monthview
 SELECT
     *,
     SUM(total_month_change) OVER (
-        PARTITION BY customer_id 
+        PARTITION BY customer_id
         ORDER BY last_day_of_month
     ) AS ending_balance
 FROM
-    (SELECT 
+    (SELECT
         customer_id,
         LAST_DAY(txn_date) as last_day_of_month,
-        SUM(CASE 
+        SUM(CASE
             WHEN txn_type = 'deposit' THEN txn_amount
             ELSE -txn_amount END) as total_month_change
     FROM customer_transactions
@@ -164,15 +164,15 @@ CREATE VIEW customer_monthly_balances AS
 	SELECT
     *,
     SUM(total_month_change) OVER (
-        PARTITION BY customer_id 
+        PARTITION BY customer_id
         ORDER BY last_day_of_month
     ) AS ending_balance,
     ROW_NUMBER() OVER(PARTITION BY customer_id ORDER BY last_day_of_month) AS sequence
 	FROM
-		(SELECT 
+		(SELECT
 			customer_id,
 			LAST_DAY(txn_date) as last_day_of_month,
-			SUM(CASE 
+			SUM(CASE
 				WHEN txn_type = 'deposit' THEN txn_amount
 				ELSE -txn_amount END) as total_month_change
 		FROM customer_transactions
@@ -181,7 +181,7 @@ CREATE VIEW customer_monthly_balances AS
 		) as sub
 );
 
-SELECT 
+SELECT
 	ROUND(COUNT(*)/(SELECT COUNT(DISTINCT customer_id) FROM customer_monthly_balances) * 100,1) AS positive_percentage,
     100-ROUND(COUNT(*)/(SELECT COUNT(DISTINCT customer_id) FROM customer_monthly_balances) * 100,1) AS negative_percentage
 FROM customer_monthly_balances
@@ -196,9 +196,9 @@ SELECT
 	SUM(IF(ROUND((following_balance - ending_balance)/ending_balance * 100) > 5.0,1,0))/
     (SELECT COUNT(DISTINCT customer_id) FROM customer_monthly_balances) * 100 AS percentage
 FROM
-	(SELECT 
+	(SELECT
 		*,
-		LEAD(ending_balance) OVER(PARTITION BY customer_id) as following_balance 
+		LEAD(ending_balance) OVER(PARTITION BY customer_id) as following_balance
 	FROM customer_monthly_balances)  as sub
 WHERE sequence = 1
 
@@ -211,9 +211,9 @@ SELECT
 	SUM(IF(ROUND((following_balance - ending_balance)/ending_balance * 100) < 5.0,1,0))/
     (SELECT COUNT(DISTINCT customer_id) FROM customer_monthly_balances) * 100 AS percentage
 FROM
-	(SELECT 
+	(SELECT
 		*,
-		LEAD(ending_balance) OVER(PARTITION BY customer_id) as following_balance 
+		LEAD(ending_balance) OVER(PARTITION BY customer_id) as following_balance
 	FROM customer_monthly_balances)  as sub
 WHERE sequence = 1
 
@@ -226,9 +226,13 @@ WHERE sequence = 1
 SELECT
 	ROUND(COUNT(*) / (SELECT COUNT(DISTINCT customer_id) FROM customer_monthly_balances) * 100,1) AS percentage
 FROM
-	(SELECT 
+	(SELECT
 		*,
-		LEAD(ending_balance) OVER(PARTITION BY customer_id) AS following_balance 
+		LEAD(ending_balance) OVER(PARTITION BY customer_id) AS following_balance
 	FROM customer_monthly_balances)  AS sub
 WHERE sequence = 1 AND ending_balance > 0 AND following_balance < 0
 ```
+
+---
+
+[**Case Study #5 - Data Mart**](Case%20Study%20%235%20-%20Data%20Mart)

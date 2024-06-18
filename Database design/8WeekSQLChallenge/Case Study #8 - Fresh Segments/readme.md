@@ -21,7 +21,7 @@ MODIFY month_year DATE
 **2 - What is count of records in the `fresh_segments.interest_metrics` for each `month_year` value sorted in chronological order (earliest to latest) with the `null` values appearing first?**
 
 ```sql
-SELECT 
+SELECT
 	month_year,
 	COUNT(*)
 FROM interest_metrics
@@ -39,14 +39,14 @@ WHERE interest_id IS NULL
 **4 - How many `interest_id` values exist in the `fresh_segments.interest_metrics` table but not in the `fresh_segments.interest_map` table? What about the other way around?**
 
 ```sql
-SELECT 
+SELECT
 	COUNT(DISTINCT interest_id) as metric_count,
 	COUNT(DISTINCT id) AS map_count,
     COUNT(DISTINCT id) - COUNT(DISTINCT interest_id) AS not_in_metric
 FROM interest_metrics AS metric
 RIGHT JOIN interest_map AS map ON metric.interest_id = map.id
 UNION
-SELECT 
+SELECT
 	COUNT(DISTINCT interest_id) as metric_count,
 	COUNT(DISTINCT id) AS map_count,
     COUNT(DISTINCT interest_id) - COUNT(DISTINCT id) AS not_in_metric
@@ -57,7 +57,7 @@ LEFT JOIN interest_map AS map ON metric.interest_id = map.id
 **5 - Summarise the id values in the `fresh_segments.interest_map` by its total record count in this table.**
 
 ```sql
-SELECT 
+SELECT
 	COUNT(DISTINCT id) AS map_count
 FROM interest_map
 ```
@@ -65,7 +65,7 @@ FROM interest_map
 **6 - What sort of table join should we perform for our analysis and why? Check your logic by checking the rows where 'interest_id = 21246' in your joined output and include all columns from `fresh_segments.interest_metrics` and all columns from `fresh_segments.interest_map` except from the id column.**
 
 ```sql
-SELECT 
+SELECT
 	_month,
     _year,
     month_year,
@@ -86,7 +86,7 @@ WHERE interest_id = 21246 AND month_year IS NOT NULL
 **7 - Are there any records in your joined table where the `month_year` value is before the `created_at` value from the `fresh_segments.interest_map` table? Do you think these values are valid and why?**
 
 ```sql
-SELECT 
+SELECT
 	COUNT(*)
 FROM interest_metrics AS metric
 JOIN interest_map AS map ON metric.interest_id = map.id
@@ -100,11 +100,11 @@ WHERE  month_year < created_at
 **1 - Which interests have been present in all `month_year` dates in our dataset?**
 
 ```sql
-SELECT 
+SELECT
 	COUNT(DISTINCT month_year) AS unique_month_count
 FROM interest_metrics;
 -- 14 unique months
-SELECT 
+SELECT
 	interest_id,
   COUNT(*) AS frequency
 FROM interest_metrics
@@ -116,7 +116,7 @@ HAVING frequency = 14
 
 ```sql
 WITH count_frequency AS
-(SELECT 
+(SELECT
 	interest_id,
     COUNT(month_year) as month_frequency
 FROM interest_metrics
@@ -134,7 +134,7 @@ cal_cumulative AS
     ROUND(SUM(interest_count) OVER(ORDER BY month_frequency DESC) / SUM(interest_count) OVER() * 100 , 2) AS cumulative
 FROM count_interest
 GROUP BY month_frequency,interest_count)
-SELECT 
+SELECT
 	*
 FROM cal_cumulative
 WHERE cumulative > 90
@@ -145,7 +145,7 @@ WHERE cumulative > 90
 
 ```sql
 WITH count_frequency AS
-(SELECT 
+(SELECT
 	interest_id,
     COUNT(month_year) as month_frequency
 FROM interest_metrics
@@ -157,7 +157,7 @@ FROM interest_metrics
 WHERE interest_id IN (SELECT interest_id FROM count_frequency);
 ```
 
-**4 - Does this decision make sense to remove these data points from a business perspective? Use an example where there are all 14 months present to a removed interest example for your arguments - think about what it means to have less months present from a segment perspective.** 
+**4 - Does this decision make sense to remove these data points from a business perspective? Use an example where there are all 14 months present to a removed interest example for your arguments - think about what it means to have less months present from a segment perspective.**
 
 ```sql
 
@@ -174,7 +174,7 @@ WHERE interest_id IN (SELECT interest_id FROM count_frequency);
 ```sql
 CREATE VIEW filtered_data AS
 WITH count_frequency AS
-(SELECT 
+(SELECT
 	interest_id,
     COUNT(month_year) as month_frequency
 FROM interest_metrics
@@ -190,7 +190,7 @@ WHERE interest_id IN (SELECT interest_id FROM count_frequency)
 
 ```sql
 -- Bottom 10
-SELECT 
+SELECT
     month_year, interest_id, MAX(composition) AS max_composition
 FROM
     filtered_data
@@ -199,7 +199,7 @@ ORDER BY max_composition ASC,month_year
 LIMIT 10;
 
 -- Top 10
-SELECT 
+SELECT
     month_year, interest_id, MAX(composition) AS max_composition
 FROM
     filtered_data
@@ -212,12 +212,12 @@ LIMIT 10;
 **2 - Which 5 interests had the lowest average ranking value?**
 
 ```sql
-SELECT 
+SELECT
     DISTINCT interest_id,
     AVG(ranking) OVER(PARTITION BY interest_id) AS avg_ranking
 FROM
     filtered_data
-ORDER BY avg_ranking 
+ORDER BY avg_ranking
 LIMIT 5
 
 ```
@@ -225,7 +225,7 @@ LIMIT 5
 **3 - Which 5 interests had the largest standard deviation in their percentile_ranking value?**
 
 ```sql
-SELECT 
+SELECT
     interest_id,
 	STDDEV(percentile_ranking) AS standard_deviation
 FROM
@@ -239,7 +239,7 @@ LIMIT 5
 
 ```sql
 WITH top_5_stddev AS
-(SELECT 
+(SELECT
     interest_id,
 	STDDEV(percentile_ranking) AS standard_deviation
 FROM
@@ -260,7 +260,7 @@ GROUP BY interest_id
 **5 - How would you describe our customers in this segment based off their composition and ranking values? What sort of products or services should we show to these customers and what should we avoid?**
 
 ```sql
-SELECT 
+SELECT
 	interest_id,
     interest_name,
     interest_summary,
@@ -282,7 +282,7 @@ LIMIT 10
 CREATE VIEW metric_with_avg_composition AS
 SELECT
 	*,
-    ROUND(composition/index_value,2) AS avg_composition 
+    ROUND(composition/index_value,2) AS avg_composition
 FROM interest_metrics
 ```
 
@@ -312,7 +312,7 @@ WITH cte AS
 FROM metric_with_avg_composition
 WHERE ranking <= 10
 ORDER BY month_year)
-SELECT 
+SELECT
 	interest_id,
     COUNT(*) AS frequency
 FROM cte
@@ -333,7 +333,7 @@ WITH cte AS
 FROM metric_with_avg_composition
 WHERE ranking <= 10
 ORDER BY month_year)
-SELECT 
+SELECT
 	month_year,
     ROUND(AVG(avg_composition),2) AS avg_composition_each_month
 FROM cte
@@ -352,3 +352,7 @@ GROUP BY month_year;
 ```sql
 
 ```
+
+---
+
+[**Case Study #1 - Danny's Diner**](Case%20Study%20%231%20-%20Danny's%20Diner)

@@ -3,7 +3,7 @@
 **1 - How many customers has Foodie-Fi ever had?**
 
 ```sql
-SELECT 
+SELECT
 	COUNT(DISTINCT customer_id) AS customer_count
 FROM subscriptions
 
@@ -12,7 +12,7 @@ FROM subscriptions
 **2 - What is the monthly distribution of `trial` plan `start_date` values for our dataset - use the start of the month as the group by value**
 
 ```sql
-SELECT 
+SELECT
 	MONTH(start_date) AS month_of_year,
     COUNT(*) AS trial_plan_count
 FROM subscriptions AS s
@@ -25,7 +25,7 @@ ORDER BY month_of_year
 **3 - What plan `start_date` values occur after the year 2020 for our dataset? Show the breakdown by count of events for each `plan_name`**
 
 ```sql
-SELECT 
+SELECT
 	s.plan_id,
 	plan_name,
     COUNT(*) AS plan_count
@@ -40,7 +40,7 @@ ORDER BY s.plan_id
 **4 - What is the customer count and percentage of customers who have churned rounded to 1 decimal place?**
 
 ```sql
-SELECT 
+SELECT
     SUM(
 		IF(plan_name = 'churn',1,0)
         ) AS churn_count,
@@ -62,7 +62,7 @@ WITH cte_rank AS (
 	FROM subscriptions
 )
 
-SELECT 
+SELECT
 	COUNT(*) as customer_count,
     ROUND(COUNT(*)/(SELECT COUNT(DISTINCT customer_id) from subscriptions)*100) as percentage
 FROM cte_rank
@@ -77,16 +77,16 @@ WHERE customer_id IN
 **6 - What is the number and percentage of customer plans after their initial free trial?**
 
 ```sql
-SELECT 
+SELECT
 	plan_id,
     COUNT(customer_id) as customer_count,
 	ROUND(COUNT(customer_id)/(SELECT COUNT(DISTINCT customer_id) FROM subscriptions)*100,1) as percentage
 FROM
-	(SELECT 
+	(SELECT
 		*,
 		LAG(plan_id) OVER (PARTITION BY customer_id) as previous_plan
 	FROM subscriptions) as sub
-WHERE previous_plan = 0 
+WHERE previous_plan = 0
 GROUP BY plan_id
 ORDER BY plan_id
 ```
@@ -94,7 +94,7 @@ ORDER BY plan_id
 **7 - What is the customer count and percentage breakdown of all 5 `plan_name` values at `2020-12-31`?**
 
 ```sql
-SELECT 
+SELECT
 	plan_id,
     COUNT(customer_id) AS customer_count,
     ROUND(COUNT(customer_id)/(SELECT COUNT(DISTINCT customer_id) FROM subscriptions)*100,1) as percentage
@@ -102,7 +102,7 @@ FROM (
 	SELECT
 		*,
 		LAST_VALUE(plan_id) OVER(PARTITION BY customer_id) as last_plan_id
-	FROM subscriptions 
+	FROM subscriptions
     WHERE start_date <= '2020-12-31') AS subquery
 WHERE plan_id = last_plan_id
 GROUP BY plan_id
@@ -113,7 +113,7 @@ ORDER BY plan_id
 **8 - How many customers have upgraded to an annual plan in 2020?**
 
 ```sql
-SELECT 
+SELECT
 	COUNT(DISTINCT customer_id) as customer_count
 FROM subscriptions
 WHERE YEAR(start_date) = 2020 and plan_id = 3
@@ -122,33 +122,33 @@ WHERE YEAR(start_date) = 2020 and plan_id = 3
 **9 - How many days on average does it take for a customer to an annual plan from the day they join Foodie-Fi?**
 
 ```sql
-SELECT 
+SELECT
 	ROUND(AVG(TIMESTAMPDIFF(DAY, start_date, annual_date)),0) as avg_date_join
 FROM subscriptions AS s1
 JOIN (
-	SELECT 
+	SELECT
 		customer_id,
 		start_date AS annual_date
 	FROM subscriptions
     WHERE plan_id = 3) AS s2 ON s1.customer_id = s2.customer_id
-WHERE plan_id = 0 
+WHERE plan_id = 0
 ```
 
 **10 - Can you further breakdown this average value into 30 day periods (i.e. 0-30 days, 31-60 days etc)**
 
 ```sql
-SELECT 
+SELECT
 	CONCAT(TIMESTAMPDIFF(MONTH, start_date, annual_date) *30,' - ',(TIMESTAMPDIFF(MONTH, start_date, annual_date) + 1)*30,' days') as period,
     TIMESTAMPDIFF(MONTH, start_date, annual_date) as period_month,
     COUNT(*) as customer_count
 FROM subscriptions AS s1
 JOIN (
-	SELECT 
+	SELECT
 		customer_id,
 		start_date AS annual_date
 	FROM subscriptions
     WHERE plan_id = 3) AS s2 ON s1.customer_id = s2.customer_id
-WHERE plan_id = 0 
+WHERE plan_id = 0
 GROUP BY period,period_month
 ORDER BY period_month
 
@@ -157,13 +157,17 @@ ORDER BY period_month
 **11 - How many customers downgraded from a pro monthly to a basic monthly plan in 2020?**
 
 ```sql
-SELECT 
+SELECT
     COUNT(DISTINCT customer_id) as customer_count
 FROM
-	(SELECT 
+	(SELECT
 		*,
 		LAG(plan_id) OVER (PARTITION BY customer_id) as previous_plan
 	FROM subscriptions) as sub
 WHERE plan_id = 2 and previous_plan = 3
 
 ```
+
+---
+
+[**Case Study #4 - Data Bank**](Case%20Study%20%234%20-%20Data%20Bank)

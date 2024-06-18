@@ -5,7 +5,7 @@
 **1 - What was the total quantity sold for all products?**
 
 ```sql
-SELECT 
+SELECT
 	product_name,
 	SUM(qty) AS total_quantity
 FROM sales AS s
@@ -27,7 +27,7 @@ GROUP BY product_name
 **3 - What was the total discount amount for all products?**
 
 ```sql
-SELECT 
+SELECT
 	product_name,
 	SUM(s.price * qty * discount/100) AS total_discount
 FROM sales AS s
@@ -41,7 +41,7 @@ GROUP BY product_name
 **1 - How many unique transactions were there?**
 
 ```sql
-SELECT 
+SELECT
 	COUNT(DISTINCT txn_id) AS trans_count
 FROM sales
 
@@ -51,7 +51,7 @@ FROM sales
 
 ```sql
 SELECT
-	ROUND(SUM(qty) / (SELECT COUNT(DISTINCT txn_id) FROM sales)) AS avg_qty 
+	ROUND(SUM(qty) / (SELECT COUNT(DISTINCT txn_id) FROM sales)) AS avg_qty
 FROM sales AS s
 ```
 
@@ -59,7 +59,7 @@ FROM sales AS s
 
 ```sql
 WITH revenue_quartiles AS (
-    SELECT 
+    SELECT
         SUM(price*qty) AS revenue,
         NTILE(4) OVER(ORDER BY SUM(price*qty)) AS quartile
     FROM sales
@@ -191,7 +191,7 @@ WITH total_revenue_segment AS
 FROM sales AS s
 JOIN product_details AS pd ON pd.product_id = s.prod_id
 GROUP BY segment_name)
-SELECT 
+SELECT
 	pd.segment_name,
     product_name,
     SUM(qty*s.price) / total_revenue * 100 as revenue_percentage
@@ -213,7 +213,7 @@ WITH total_revenue_category AS
 FROM sales AS s
 JOIN product_details AS pd ON pd.product_id = s.prod_id
 GROUP BY category_name)
-SELECT 
+SELECT
 	pd.category_name,
     product_name,
     SUM(qty*s.price) / total_revenue * 100 as revenue_percentage
@@ -229,7 +229,7 @@ ORDER BY pd.category_name
 
 ```sql
 
-SELECT 
+SELECT
 	category_name,
 	SUM(qty * s.price)/(SELECT SUM(qty*price) OVER() FROM sales LIMIT 1)*100 AS total_revenue
 FROM sales AS s
@@ -248,7 +248,7 @@ WITH count_prod_trans AS
 FROM sales AS s
 JOIN product_details AS pd ON pd.product_id = s.prod_id
 GROUP BY product_name,txn_id)
-SELECT 
+SELECT
 	DISTINCT product_name,
     LAST_VALUE(ranking) OVER(PARTITION BY product_name) / (SELECT COUNT(DISTINCT txn_id) FROM sales) AS penetration
 FROM count_prod_trans
@@ -259,3 +259,7 @@ FROM count_prod_trans
 ```sql
 
 ```
+
+---
+
+[**Case Study #7 - Balanced Tree**](Case%20Study%20%237%20-%20Balanced%20Tree)

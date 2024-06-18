@@ -77,10 +77,10 @@ FROM runner_orders
 WHERE pickup_time != 'null'
 )
 
-SELECT 
+SELECT
 		customer_id,
     COUNT(CASE
-					WHEN (exclusions not in ('null','') and exclusions is not NULL)  
+					WHEN (exclusions not in ('null','') and exclusions is not NULL)
 					or ( extras not in ('null','') and extras is not NULL) THEN 1
 		END) as at_least_1_change,
 	count(CASE
@@ -94,7 +94,7 @@ GROUP BY customer_id
 **8 - How many pizzas were delivered that had both exclusions and extras?**
 
 ```sql
-SELECT 
+SELECT
     count(CASE
 			WHEN (exclusions not in ('null','') and exclusions is not NULL)  and ( extras not in ('null','') and extras is not NULL) THEN 1
 		END) as pizza_count_w_exclusions_extras
@@ -105,14 +105,14 @@ WHERE order_id in (SELECT order_id FROM cte_order_id_success_delivered)
 **9 - What was the total volume of pizzas ordered for each hour of the day?**
 
 ```sql
-SELECT 
+SELECT
     HOUR(order_time) AS hour_of_day,
     COUNT(*) AS order_count
-FROM 
+FROM
     customer_orders
-GROUP BY 
+GROUP BY
     hour_of_day
-ORDER BY 
+ORDER BY
     hour_of_day;
 ```
 
@@ -120,14 +120,14 @@ ORDER BY
 
 ```sql
 -- ADD 1 to adjust 1st day of the week as monday
-SELECT 
-    ELT(DAYOFWEEK(order_time + INTERVAL 1 day),'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday') AS date_of_week, 
+SELECT
+    ELT(DAYOFWEEK(order_time + INTERVAL 1 day),'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday') AS date_of_week,
     COUNT(*) AS order_count
-FROM 
+FROM
     customer_orders
-GROUP BY 
+GROUP BY
     date_of_week
-ORDER BY order_count desc 
+ORDER BY order_count desc
 ```
 
 # **B. Runner and Customer Experience**
@@ -135,7 +135,7 @@ ORDER BY order_count desc
 **1 - How many runners signed up for each 1 week period? (i.e. week starts `2021-01-01`)**
 
 ```sql
-SELECT 
+SELECT
 	WEEKOFYEAR(registration_date + INTERVAL 1 week) AS registraion_week,
     COUNT(*) AS runner_signup
 FROM runners
@@ -147,7 +147,7 @@ GROUP BY registraion_week
 ```sql
 SELECT AVG(avg_each_order) AS avg_pickup_minutes
 FROM (
-	SELECT 
+	SELECT
 		DISTINCT ro.order_id,
 		TIMESTAMPDIFF(MINUTE,order_time,pickup_time) AS avg_each_order
 	FROM runner_orders AS ro
@@ -161,7 +161,7 @@ FROM (
 SELECT pizza_count,
 		AVG(avg_pickup_time) AS avg_pickup_time
 FROM
-	(SELECT 
+	(SELECT
 			ro.order_id,
 			COUNT(pizza_id) AS pizza_count,
 			AVG(TIMESTAMPDIFF(MINUTE,order_time,pickup_time)) AS avg_pickup_time
@@ -175,7 +175,7 @@ GROUP BY pizza_count
 
 ```sql
 
-SELECT 
+SELECT
 	customer_id,
     AVG(distance) AS avg_distance
 FROM runner_orders AS ro
@@ -197,7 +197,7 @@ WHERE pickup_time != 'null'
 **6 - What was the average speed for each runner for each delivery and do you notice any trend for these values?**
 
 ```sql
-SELECT 
+SELECT
 	runner_id,
     ROUND(CAST(distance AS FLOAT)/CAST(duration AS FLOAT )*60,2) as avg_speed
 FROM runner_orders
@@ -208,7 +208,7 @@ WHERE pickup_time != 'null'
 
 ```sql
 
-SELECT 
+SELECT
 	runner_id,
     ROUND(SUM(CASE
 			WHEN pickup_time != 'null' THEN 1
@@ -223,7 +223,7 @@ GROUP BY runner_id
 **1 - What are the standard ingredients for each pizza?**
 
 ```sql
-SELECT 
+SELECT
 	pizza_id,
     topping_name
 FROM pizza_recipes
@@ -236,10 +236,10 @@ ORDER BY pizza_id
 
 ```sql
 
-SELECT 
+SELECT
 	topping_id,
     topping_name,
-    SUM(CASE 
+    SUM(CASE
 		WHEN FIND_IN_SET(topping_id,REPLACE(extras,' ','')) != 0 THEN 1
         ELSE 0 END) as topping_count
 FROM pizza_toppings
@@ -252,10 +252,10 @@ HAVING topping_count > 0
 **3 - What was the most common exclusion?**
 
 ```sql
-SELECT 
+SELECT
 	topping_id,
     topping_name,
-    SUM(CASE 
+    SUM(CASE
 		WHEN FIND_IN_SET(topping_id,REPLACE(exclusions,' ','')) != 0 THEN 1
         ELSE 0 END) as topping_count
 FROM pizza_toppings
@@ -274,19 +274,19 @@ HAVING topping_count > 0
 - `Meat Lovers - Exclude Cheese, Bacon - Extra Mushroom, Peppers`
 
 ```sql
-SELECT 
-	CONCAT(pizza_names.pizza_name, 
-		IF(exclusions NOT IN ('null','') AND exclusions IS NOT NULL, 
-			CONCAT(' - Exclude ', 
+SELECT
+	CONCAT(pizza_names.pizza_name,
+		IF(exclusions NOT IN ('null','') AND exclusions IS NOT NULL,
+			CONCAT(' - Exclude ',
 				(SELECT GROUP_CONCAT(topping_name separator  ', ')
 				FROM pizza_toppings
 				WHERE FIND_IN_SET(topping_id,REPLACE(exclusions,' ','')) != 0
 				GROUP BY pizza_names.pizza_name
 				)
 			)
-        , ''), 	
-        IF(extras NOT IN ('null','') AND extras IS NOT NULL, 
-			CONCAT(' - Extra ', 
+        , ''),
+        IF(extras NOT IN ('null','') AND extras IS NOT NULL,
+			CONCAT(' - Extra ',
 				(SELECT GROUP_CONCAT(topping_name separator  ', ')
 				FROM pizza_toppings
 				WHERE FIND_IN_SET(topping_id,REPLACE(extras,' ','')) != 0
@@ -299,7 +299,7 @@ JOIN pizza_names ON customer_orders.pizza_id = pizza_names.pizza_id
 
 ```
 
-**5 -  Generate an alphabetically ordered comma separated ingredient list for each pizza order from the `customer_orders` table and add a `2x` in front of any relevant ingredients**
+**5 - Generate an alphabetically ordered comma separated ingredient list for each pizza order from the `customer_orders` table and add a `2x` in front of any relevant ingredients**
 
 - For example: `"Meat Lovers: 2xBacon, Beef, ... , Salami"`
 
@@ -353,7 +353,7 @@ CREATE TABLE ratings (
     CHECK(rating BETWEEN 1 AND 5)
 );
 
-INSERT INTO ratings VALUES 
+INSERT INTO ratings VALUES
 		(1,1),
     (2,3),
     (3,5),
@@ -378,7 +378,7 @@ INSERT INTO ratings VALUES
 - Total number of pizzas
 
 ```sql
-SELECT 
+SELECT
 	customer_id,
     co.order_id,
     runner_id,
@@ -418,10 +418,14 @@ JOIN pizza_names AS pn ON co.pizza_id = pn.pizza_id
 JOIN runner_orders AS ro ON co.order_id = ro.order_id
 WHERE pickup_time != 'null'
 GROUP BY co.order_id)
-SELECT 
+SELECT
 	ROUND(SUM(total - 0.3 * CAST(distance AS FLOAT)) OVER(),2) AS total_with_delivery
 FROM runner_orders AS ro
 JOIN total_without_delivery AS twd ON ro.order_id = twd.order_id
 LIMIT 1
 
 ```
+
+---
+
+[**Case Study #3 - Foodie-Fi**](Case%20Study%20%233%20-%20Foodie-Fi)

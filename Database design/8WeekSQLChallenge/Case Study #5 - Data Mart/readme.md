@@ -12,12 +12,12 @@ CREATE VIEW clean_weekly_sales AS
     region,
     platform,
     segment,
-    (CASE 
+    (CASE
 		WHEN segment LIKE '%1' THEN 'Young Adults'
         WHEN segment LIKE '%2' THEN 'Middle Aged'
         WHEN segment LIKE '%3' OR segment LIKE '%4' THEN 'Retirees'
         ELSE 'Unknown' END) as age_band,
-	(CASE 
+	(CASE
 		WHEN segment LIKE 'C%' THEN 'Couples'
         WHEN segment LIKE 'F%' THEN 'Families'
         ELSE 'Unknown' END) as demographic,
@@ -30,11 +30,11 @@ FROM weekly_sales)
 
 # **B. Data Exploration**
 
-**1 -  What day of the week is used for each week_date value?**
+**1 - What day of the week is used for each week_date value?**
 
 ```sql
-SELECT 
-	DISTINCT DAYOFWEEK(week_date) AS week_day 
+SELECT
+	DISTINCT DAYOFWEEK(week_date) AS week_day
 FROM clean_weekly_sales
 ```
 
@@ -47,18 +47,18 @@ WITH RECURSIVE list_52_week AS (
     SELECT week_number + 1
     FROM list_53_week
     WHERE week_number < 52
-) 
+)
 SELECT COUNT(DISTINCT l.week_number)
 FROM list_53_week AS l
 LEFT JOIN clean_weekly_sales AS cws
   ON l.week_number = cws.week_number
-WHERE cws.week_number IS NULL; 
+WHERE cws.week_number IS NULL;
 ```
 
 **3 - How many total transactions were there for each year in the dataset?**
 
 ```sql
-SELECT 
+SELECT
 	calendar_year,
     SUM(transactions) AS total_transaction
 FROM clean_weekly_sales
@@ -68,7 +68,7 @@ GROUP BY calendar_year
 **4 - What is the total sales for each region for each month?**
 
 ```sql
-SELECT 
+SELECT
 	region,
     month_number,
     SUM(sales) AS total_sales
@@ -79,7 +79,7 @@ GROUP BY region, month_number
 **5 - What is the total count of transactions for each platform?**
 
 ```sql
-SELECT 
+SELECT
 	platform,
     SUM(transactions) AS total_transactions
 FROM clean_weekly_sales
@@ -90,7 +90,7 @@ GROUP BY platform
 
 ```sql
 WITH total_sales_each_month AS (
-	SELECT 
+	SELECT
 		calendar_year,
 		month_number,
 		SUM(sales) AS total_sales
@@ -98,7 +98,7 @@ WITH total_sales_each_month AS (
 	GROUP BY calendar_year,month_number
 	ORDER BY calendar_year,month_number
 )
-SELECT 
+SELECT
 	cws.calendar_year,
 	cws.month_number,
 	ROUND(SUM(
@@ -117,14 +117,14 @@ ORDER BY calendar_year,month_number;
 
 ```sql
 WITH total_sales_each_year AS (
-	SELECT 
+	SELECT
 		calendar_year,
 		SUM(sales) AS total_sales
 	FROM clean_weekly_sales
 	GROUP BY calendar_year
 	ORDER BY calendar_year
 )
-SELECT 
+SELECT
 	cws.calendar_year,
 	ROUND(SUM(
 		IF(demographic = 'Couples',sales,0)
@@ -144,7 +144,7 @@ ORDER BY calendar_year
 **8 - Which age_band and demographic values contribute the most to Retail sales?**
 
 ```sql
-SELECT 
+SELECT
 	age_band,
     demographic,
 	SUM(sales) AS total_sales,
@@ -158,14 +158,14 @@ ORDER BY total_sales DESC
 **9 - Can we use the `avg_transaction` column to find the average transaction size for each year for Retail vs Shopify? If not - how would you calculate it instead?**
 
 ```sql
-SELECT 
+SELECT
 	calendar_year,
 	platform,
    ROUND(AVG(avg_transaction)) as avg_transaction
-    
+
 FROM clean_weekly_sales
 GROUP BY calendar_year, platform
-ORDER BY calendar_year 
+ORDER BY calendar_year
 ```
 
 # **C. Before & After Analysis**
@@ -173,7 +173,7 @@ ORDER BY calendar_year
 **1 - What is the total sales for the 4 weeks before and after `2020-06-15`? What is the growth or reduction rate in actual values and percentage of sales?**
 
 ```sql
-SELECT 
+SELECT
 	total_sales_after - total_sales_before as variance_sales,
 	ROUND((total_sales_after - total_sales_before) / total_sales_before * 100,2) as variance_percentage
 FROM
@@ -189,7 +189,7 @@ FROM
 **2 - What about the entire 12 weeks before and after?**
 
 ```sql
-SELECT 
+SELECT
 	total_sales_after - total_sales_before as variance_sales,
 	ROUND((total_sales_after - total_sales_before) / total_sales_before * 100,2) as variance_percentage
 FROM
@@ -208,7 +208,7 @@ FROM
 - **Part 1: How do the sale metrics for 4 weeks before and after compare with the previous years in 2018 and 2019?**
 
 ```sql
-SELECT 
+SELECT
 	calendar_year,
 	total_sales_after - total_sales_before as variance_sales,
 	ROUND((total_sales_after - total_sales_before) / total_sales_before * 100,2) as variance_percentage
@@ -229,7 +229,7 @@ ORDER BY calendar_year
 - **Part 2: How do the sale metrics for 12 weeks before and after compare with the previous years in 2018 and 2019?**
 
 ```sql
-SELECT 
+SELECT
 	calendar_year,
 	total_sales_after - total_sales_before as variance_sales,
 	ROUND((total_sales_after - total_sales_before) / total_sales_before * 100,2) as variance_percentage
@@ -252,7 +252,7 @@ ORDER BY calendar_year
 - Which areas of the business have the highest negative impact in sales metrics performance in 2020 for the 12 week before and after period?
 
 ```sql
-SELECT 
+SELECT
 	region,
 	platform,
 	age_band,
@@ -283,7 +283,11 @@ GROUP BY region,
         age_band,
         demographic,
         customer_type
-ORDER BY variance_sales 
+ORDER BY variance_sales
 LIMIT 1
 
 ```
+
+---
+
+[**Case Study #6 - Clique Bait**](Case%20Study%20%236%20-%20Clique%20Bait)
