@@ -258,6 +258,20 @@ FROM count_prod_trans
 
 ```sql
 
+SELECT
+	s1.prod_id as prod_1,
+    s2.prod_id as prod_2,
+    s3.prod_id as prod_3,
+    COUNT(*) as count
+FROM sales s1
+JOIN sales s2 ON s1.txn_id = s2.txn_id AND s1.prod_id > s2.prod_id
+JOIN sales s3 ON s1.txn_id = s3.txn_id AND s2.prod_id > s3.prod_id
+JOIN product_details pd ON pd.product_id = s1.prod_id 
+GROUP BY prod_1,prod_2,prod_3
+ORDER BY count DESC
+LIMIT 1;
+
+
 ```
 
 ---

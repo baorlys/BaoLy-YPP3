@@ -304,12 +304,85 @@ JOIN pizza_names ON customer_orders.pizza_id = pizza_names.pizza_id
 - For example: `"Meat Lovers: 2xBacon, Beef, ... , Salami"`
 
 ```sql
+WITH get_toppings AS
+(SELECT
+	co.order_id,
+    pizza_name,
+	CASE WHEN extras != '' THEN CONCAT(' ',toppings,CONCAT(', ',extras,',')) ELSE CONCAT(' ',toppings,',')  END AS topping,
+    CONCAT(' ',exclusions,',') AS exclusions,
+	ROW_NUMBER() OVER() AS pizza_number
+FROM customer_orders AS co
+JOIN pizza_recipes AS pr ON co.pizza_id = pr.pizza_id
+JOIN runner_orders AS ro ON ro.order_id = co.order_id
+JOIN pizza_names AS pn  ON pn.pizza_id = co.pizza_id
+WHERE pickup_time != 'null'),
+count_add_sub AS
+(SELECT
+	order_id,
+    pizza_name,
+    pizza_number,
+	topping_id,
+    topping_name,
+
+	SUM(CASE WHEN LENGTH(topping) - LENGTH(REPLACE(topping,CONCAT(topping_id,','),' ')) > 0 AND topping_id BETWEEN 10 AND 99
+				THEN ROUND(ROUND((LENGTH(topping) - LENGTH(REPLACE(topping,CONCAT(' ',topping_id,','),' ')))/2) -1 * ROUND((LENGTH(topping) - LENGTH(REPLACE(topping,CONCAT(' ',topping_id,','),' ')))/2)/2)
+			ELSE ROUND((LENGTH(topping) - LENGTH(REPLACE(topping,CONCAT(' ',topping_id,','),' ')))/2) END) AS count_add,
+	SUM(CASE WHEN LENGTH(exclusions) - LENGTH(REPLACE(exclusions,CONCAT(topping_id,','),' ')) > 0 AND topping_id BETWEEN 10 AND 99
+				THEN ROUND(ROUND((LENGTH(exclusions) - LENGTH(REPLACE(topping,CONCAT(' ',topping_id,','),' ')))/2) -1 * ROUND((LENGTH(exclusions) - LENGTH(REPLACE(exclusions,CONCAT(' ',topping_id,','),' ')))/2)/2)
+			ELSE ROUND((LENGTH(exclusions) - LENGTH(REPLACE(exclusions,CONCAT(' ',topping_id,','),' ')))/2) END) AS count_sub
+FROM pizza_toppings
+JOIN get_toppings
+GROUP BY order_id,
+    pizza_name,
+	topping_id,
+    topping_name,
+    pizza_number
+ORDER BY order_id)
+SELECT
+	order_id,
+	CONCAT(pizza_name,': ',GROUP_CONCAT(
+		CASE WHEN count_add - count_sub = 1 THEN topping_name
+			WHEN count_add - count_sub > 1 THEN CONCAT(count_add-count_sub,'x',topping_name) END
+        separator ', '
+    )) AS order_item
+FROM count_add_sub
+GROUP BY order_id,pizza_name,pizza_number
 
 ```
 
 **6 - What is the total quantity of each ingredient used in all delivered pizzas sorted by most frequent first?**
 
 ```sql
+WITH get_toppings AS
+(SELECT
+	co.order_id,
+	CASE WHEN extras != '' THEN CONCAT(' ',toppings,CONCAT(', ',extras,',')) ELSE CONCAT(' ',toppings,',')  END AS topping,
+    CONCAT(' ',exclusions,',') AS exclusions
+FROM customer_orders AS co
+JOIN pizza_recipes AS pr ON co.pizza_id = pr.pizza_id
+JOIN runner_orders AS ro ON ro.order_id = co.order_id
+WHERE pickup_time != 'null'),
+count_add_sub AS (SELECT
+
+	topping_id,
+    topping_name,
+
+	SUM(CASE WHEN LENGTH(topping) - LENGTH(REPLACE(topping,CONCAT(topping_id,','),' ')) > 0 AND topping_id BETWEEN 10 AND 99
+				THEN ROUND(ROUND((LENGTH(topping) - LENGTH(REPLACE(topping,CONCAT(' ',topping_id,','),' ')))/2) -1 * ROUND((LENGTH(topping) - LENGTH(REPLACE(topping,CONCAT(' ',topping_id,','),' ')))/2)/2)
+			ELSE ROUND((LENGTH(topping) - LENGTH(REPLACE(topping,CONCAT(' ',topping_id,','),' ')))/2) END) AS count_add,
+	SUM(CASE WHEN LENGTH(exclusions) - LENGTH(REPLACE(exclusions,CONCAT(topping_id,','),' ')) > 0 AND topping_id BETWEEN 10 AND 99
+				THEN ROUND(ROUND((LENGTH(exclusions) - LENGTH(REPLACE(topping,CONCAT(' ',topping_id,','),' ')))/2) -1 * ROUND((LENGTH(exclusions) - LENGTH(REPLACE(exclusions,CONCAT(' ',topping_id,','),' ')))/2)/2)
+			ELSE ROUND((LENGTH(exclusions) - LENGTH(REPLACE(exclusions,CONCAT(' ',topping_id,','),' ')))/2) END) AS count_sub
+
+FROM pizza_toppings
+JOIN get_toppings
+GROUP BY topping_id,
+    topping_name)
+SELECT
+	topping_id,
+    topping_name,
+    count_add-count_sub AS total_quantity
+FROM count_add_sub
 
 ```
 
