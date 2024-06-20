@@ -1,4 +1,7 @@
-# This is my progress in Young Professional Program 3 at bbv Vietnam
+# Bao Ly - YPP3
+
+## This is my progress in Young Professional Program 3 at bbv Vietnam
 
 [**8 Week SQL Challenge**](8WeekSQLChallenge)
+
 [**Communication Subsystem in MentorHub ecosystem**](MentorHub-CommunicationSubsystem)
