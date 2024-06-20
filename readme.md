@@ -1,11 +1,4 @@
-# MentorHub Project
-
-![MentorHub](MentorHub_High.png)
+# This is my progress in Young Professional Program 3 at bbv Vietnam
 
 [**8 Week SQL Challenge**](8WeekSQLChallenge)
-
-[**Database design**](Database%20design)
-
-[**UX-UI design**](UX-UI%20design)
-
-[**Use-case diagram**](Use-case%20diagram)
+[**Communication Subsystem in MentorHub ecosystem**](MentorHub-CommunicationSubsystem)
