@@ -1,5 +1,7 @@
 # MentorHub Project
 
+![MentorHub](cover.png)
+
 ![MentorHub](MentorHub_High.png)
 
 
