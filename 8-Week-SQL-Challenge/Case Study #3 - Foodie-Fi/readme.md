@@ -1,6 +1,25 @@
 # Case Study #3 - Foodie-Fi
 ![img](https://8weeksqlchallenge.com/images/case-study-designs/3.png)
 
+**4 SECTIONS**
+
+[A. Customer Journey](#a-customer-journey)
+
+[B. Data Analysis Questions](#b-data-analysis-questions)
+
+[C. Challenge Payment Question](#c-challenge-payment-question)
+
+[D. Outside The Box Questions](#d-outside-the-box-questions)
+
+---
+
+## **A. Customer Journey**
+
+```sql
+```
+
+## **B. Data Analysis Questions**
+
 **1 - How many customers has Foodie-Fi ever had?**
 
 ```sql
@@ -164,6 +183,70 @@ FROM
   FROM subscriptions) AS sub
 WHERE plan_id = 2 AND previous_plan = 3
 
+```
+
+## **C. Challenge Payment Question**
+
+```sql
+CREATE VIEW subscriptions_new AS (
+ SELECT
+  customer_id,
+        plan_id,
+        start_date,
+        LEAD(start_date) OVER(PARTITION BY customer_id) AS next_plan
+ FROM subscriptions
+    WHERE plan_id != 0 AND YEAR(start_date) = 2020
+);
+
+WITH RECURSIVE generate_month AS (
+ SELECT 
+  customer_id,
+        plan_id,
+  start_date,
+        next_plan,
+        start_date AS payment_date
+ FROM subscriptions_new s
+ UNION
+ SELECT 
+  customer_id,
+        plan_id,
+  start_date,
+        next_plan,
+        payment_date + INTERVAL 1 MONTH
+ FROM generate_month g
+ WHERE 
+  plan_id < 3  AND
+  CASE WHEN next_plan IS NOT NULL THEN payment_date < next_plan 
+        ELSE YEAR(payment_date + INTERVAL 1 MONTH) <= 2020  END
+ UNION
+ SELECT 
+  customer_id,
+        plan_id,
+  start_date,
+        next_plan,
+        payment_date + INTERVAL 1 YEAR
+ FROM generate_month g
+ WHERE 
+  plan_id = 3 AND 
+  CASE WHEN next_plan IS NOT NULL THEN payment_date < next_plan 
+        ELSE YEAR(payment_date + INTERVAL 1 YEAR) <= 2020  END
+)
+SELECT 
+ customer_id,
+    gm.plan_id,
+    plan_name,
+    payment_date,
+    price AS amount,
+    ROW_NUMBER() OVER(PARTITION BY customer_id) as payment_order
+FROM generate_month gm
+JOIN plans p ON gm.plan_id = p.plan_id
+WHERE p.plan_id != 4
+ORDER BY customer_id,gm.plan_id;
+```
+
+## **D. Outside The Box Questions**
+
+```sql
 ```
 
 ---
