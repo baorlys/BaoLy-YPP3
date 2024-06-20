@@ -6,7 +6,7 @@
 
 ```sql
 SELECT
-	COUNT(DISTINCT node_id) as unique_nodes_count
+	COUNT(DISTINCT node_id) AS unique_nodes_count
 FROM customer_nodes
 ```
 
@@ -36,13 +36,14 @@ ORDER BY region_id
 **4 - How many days on average are customers reallocated to a different node?**
 
 ```sql
-SELECT ROUND(AVG(avg_day)) as avg_node_reallocation_days
+SELECT 
+	ROUND(AVG(avg_day)) AS avg_node_reallocation_days
 FROM (
 	SELECT
-		SUM(TIMESTAMPDIFF(DAY,start_date,end_date)) as avg_day
+		SUM(TIMESTAMPDIFF(DAY,start_date,end_date)) AS avg_day
 	FROM customer_nodes
 	WHERE YEAR(end_date) != 9999
-	GROUP BY customer_id,node_id) as sub
+	GROUP BY customer_id,node_id) AS sub
 
 ```
 
@@ -51,34 +52,34 @@ FROM (
 ```sql
 CREATE VIEW avg_day_reallocation AS (
 SELECT
-		region_id,
-		SUM(TIMESTAMPDIFF(DAY,start_date,end_date)) as avg_day
-	FROM customer_nodes
-	WHERE YEAR(end_date) != 9999
-	GROUP BY region_id,customer_id,node_id
+	region_id,
+	SUM(TIMESTAMPDIFF(DAY,start_date,end_date)) AS avg_day
+FROM customer_nodes
+WHERE YEAR(end_date) != 9999
+GROUP BY region_id,customer_id,node_id
 );
-SELECT MAX(avg_day) as median
+SELECT MAX(avg_day) AS median
 FROM
 	(SELECT
 		avg_day,
 		NTILE(4) OVER(ORDER BY avg_day) AS quartile
-	FROM avg_day_reallocation) as sub
+	FROM avg_day_reallocation) AS sub
 WHERE quartile = 2;
 
-SELECT MAX(avg_day) as percentile_80
+SELECT MAX(avg_day) AS percentile_80
 FROM
 	(SELECT
 		avg_day,
 		NTILE(5) OVER(ORDER BY avg_day) AS quartile
-	FROM avg_day_reallocation) as sub
+	FROM avg_day_reallocation) AS sub
 WHERE quartile = 4;
 
-SELECT MAX(avg_day) as percentile_95
+SELECT MAX(avg_day) AS percentile_95
 FROM
 	(SELECT
 		avg_day,
 		NTILE(20) OVER(ORDER BY avg_day) AS quartile
-	FROM avg_day_reallocation) as sub
+	FROM avg_day_reallocation) AS sub
 WHERE quartile = 19;
 
 ```
@@ -100,16 +101,16 @@ GROUP BY txn_type
 
 ```sql
 SELECT
-	ROUND(AVG(txn_count)) as avg_txn_count,
-    ROUND(AVG(avg_amount_each_customer)) as avg_amount
+	ROUND(AVG(txn_count)) AS avg_txn_count,
+    ROUND(AVG(avg_amount_each_customer)) AS avg_amount
 FROM
 	(SELECT
 		txn_type,
-		COUNT(*) as txn_count,
-		AVG(txn_amount) as avg_amount_each_customer
+		COUNT(*) AS txn_count,
+		AVG(txn_amount) AS avg_amount_each_customer
 	FROM customer_transactions
 	WHERE txn_type = 'deposit'
-	GROUP BY customer_id) as sub
+	GROUP BY customer_id) AS sub
 ```
 
 **3 - For each month - how many Data Bank customers make more than 1 deposit and either 1 purchase or 1 withdrawal in a single month?**
@@ -117,16 +118,16 @@ FROM
 ```sql
 SELECT
 	monthview,
-    COUNT(DISTINCT customer_id) as customer_count
+    COUNT(DISTINCT customer_id) AS customer_count
 FROM
 	(SELECT
-		MONTH(txn_date) as monthview,
+		MONTH(txn_date) AS monthview,
 		customer_id,
-		SUM(IF(txn_type = 'deposit', 1,0)) as deposit_count,
-		SUM(IF(txn_type != 'deposit', 1,0)) as purchase_or_withdrawal_count
+		SUM(IF(txn_type = 'deposit', 1,0)) AS deposit_count,
+		SUM(IF(txn_type != 'deposit', 1,0)) AS purchase_or_withdrawal_count
 	FROM customer_transactions
-	GROUP BY monthview, customer_id) as sub
-WHERE deposit_count > 1 and purchase_or_withdrawal_count >=1
+	GROUP BY monthview, customer_id) AS sub
+WHERE deposit_count > 1 AND purchase_or_withdrawal_count >=1
 GROUP BY monthview
 ```
 
@@ -142,15 +143,15 @@ SELECT
 FROM
     (SELECT
         customer_id,
-        LAST_DAY(txn_date) as last_day_of_month,
+        LAST_DAY(txn_date) AS last_day_of_month,
         SUM(CASE
-            WHEN txn_type = 'deposit' THEN txn_amount
-            ELSE -txn_amount END) as total_month_change
+            	WHEN txn_type = 'deposit' THEN txn_amount
+            	ELSE -txn_amount END) AS total_month_change
     FROM customer_transactions
     WHERE customer_id = 3
     GROUP BY customer_id, last_day_of_month
     ORDER BY customer_id, last_day_of_month
-    ) as sub
+    ) AS sub
 
 ```
 
@@ -167,23 +168,28 @@ CREATE VIEW customer_monthly_balances AS
         PARTITION BY customer_id
         ORDER BY last_day_of_month
     ) AS ending_balance,
-    ROW_NUMBER() OVER(PARTITION BY customer_id ORDER BY last_day_of_month) AS sequence
+    ROW_NUMBER() OVER(
+		PARTITION BY customer_id 
+		ORDER BY last_day_of_month
+	) AS sequence
 	FROM
 		(SELECT
 			customer_id,
-			LAST_DAY(txn_date) as last_day_of_month,
+			LAST_DAY(txn_date) AS last_day_of_month,
 			SUM(CASE
 				WHEN txn_type = 'deposit' THEN txn_amount
-				ELSE -txn_amount END) as total_month_change
+				ELSE -txn_amount END) AS total_month_change
 		FROM customer_transactions
 		GROUP BY customer_id, last_day_of_month
 		ORDER BY customer_id, last_day_of_month
-		) as sub
+		) AS sub
 );
 
 SELECT
-	ROUND(COUNT(*)/(SELECT COUNT(DISTINCT customer_id) FROM customer_monthly_balances) * 100,1) AS positive_percentage,
-    100-ROUND(COUNT(*)/(SELECT COUNT(DISTINCT customer_id) FROM customer_monthly_balances) * 100,1) AS negative_percentage
+	ROUND(COUNT(*)/
+		(SELECT COUNT(DISTINCT customer_id) FROM customer_monthly_balances) * 100,1) AS positive_percentage,
+    100-ROUND(COUNT(*)/
+		(SELECT COUNT(DISTINCT customer_id) FROM customer_monthly_balances) * 100,1) AS negative_percentage
 FROM customer_monthly_balances
 WHERE ending_balance > 0 AND sequence = 1
 ```
@@ -198,8 +204,8 @@ SELECT
 FROM
 	(SELECT
 		*,
-		LEAD(ending_balance) OVER(PARTITION BY customer_id) as following_balance
-	FROM customer_monthly_balances)  as sub
+		LEAD(ending_balance) OVER(PARTITION BY customer_id) AS following_balance
+	FROM customer_monthly_balances)  AS sub
 WHERE sequence = 1
 
 ```
@@ -213,8 +219,8 @@ SELECT
 FROM
 	(SELECT
 		*,
-		LEAD(ending_balance) OVER(PARTITION BY customer_id) as following_balance
-	FROM customer_monthly_balances)  as sub
+		LEAD(ending_balance) OVER(PARTITION BY customer_id) AS following_balance
+	FROM customer_monthly_balances)  AS sub
 WHERE sequence = 1
 
 ```

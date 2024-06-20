@@ -6,9 +6,9 @@
 CREATE VIEW clean_weekly_sales AS
 (SELECT
 	STR_TO_DATE(week_date,'%d/%m/%y') AS week_date,
-    WEEKOFYEAR(STR_TO_DATE(week_date,'%d/%m/%y')) as week_number,
-    MONTH(STR_TO_DATE(week_date,'%d/%m/%y')) as month_number,
-    YEAR(STR_TO_DATE(week_date,'%d/%m/%y')) as calendar_year,
+    WEEKOFYEAR(STR_TO_DATE(week_date,'%d/%m/%y')) AS week_number,
+    MONTH(STR_TO_DATE(week_date,'%d/%m/%y')) AS month_number,
+    YEAR(STR_TO_DATE(week_date,'%d/%m/%y')) AS calendar_year,
     region,
     platform,
     segment,
@@ -42,13 +42,16 @@ FROM clean_weekly_sales
 
 ```sql
 WITH RECURSIVE list_52_week AS (
-    SELECT 1 AS week_number
+    SELECT 
+		1 AS week_number
     UNION ALL
-    SELECT week_number + 1
+    SELECT 
+		week_number + 1
     FROM list_53_week
     WHERE week_number < 52
 )
-SELECT COUNT(DISTINCT l.week_number)
+SELECT 
+	COUNT(DISTINCT l.week_number)
 FROM list_53_week AS l
 LEFT JOIN clean_weekly_sales AS cws
   ON l.week_number = cws.week_number
@@ -103,10 +106,10 @@ SELECT
 	cws.month_number,
 	ROUND(SUM(
 		IF(platform = 'Retail',sales,0)
-    )/total_sales * 100,2) as percentage_retail,
+    )/total_sales * 100,2) AS percentage_retail,
     100 - ROUND(SUM(
 		IF(platform = 'Retail',sales,0)
-    )/total_sales * 100,2) as percentage_shopee
+    )/total_sales * 100,2) AS percentage_shopee
 FROM clean_weekly_sales AS cws
 JOIN total_sales_each_month AS tsem ON cws.calendar_year = tsem.calendar_year AND cws.month_number = tsem.month_number
 GROUP BY cws.calendar_year, cws.month_number
@@ -128,13 +131,13 @@ SELECT
 	cws.calendar_year,
 	ROUND(SUM(
 		IF(demographic = 'Couples',sales,0)
-    )/total_sales * 100,2) as percentage_couples,
+    )/total_sales * 100,2) AS percentage_couples,
     ROUND(SUM(
 		IF(demographic = 'Families',sales,0)
-    )/total_sales * 100,2) as percentage_families,
+    )/total_sales * 100,2) AS percentage_families,
     ROUND(SUM(
 		IF(demographic = 'Unknown',sales,0)
-    )/total_sales * 100,2) as percentage_unknow
+    )/total_sales * 100,2) AS percentage_unknow
 FROM clean_weekly_sales AS cws
 JOIN total_sales_each_year AS tsey ON cws.calendar_year = tsey.calendar_year
 GROUP BY cws.calendar_year
@@ -161,8 +164,7 @@ ORDER BY total_sales DESC
 SELECT
 	calendar_year,
 	platform,
-   ROUND(AVG(avg_transaction)) as avg_transaction
-
+   	ROUND(AVG(avg_transaction)) as avg_transaction
 FROM clean_weekly_sales
 GROUP BY calendar_year, platform
 ORDER BY calendar_year
@@ -174,8 +176,8 @@ ORDER BY calendar_year
 
 ```sql
 SELECT
-	total_sales_after - total_sales_before as variance_sales,
-	ROUND((total_sales_after - total_sales_before) / total_sales_before * 100,2) as variance_percentage
+	total_sales_after - total_sales_before AS variance_sales,
+	ROUND((total_sales_after - total_sales_before) / total_sales_before * 100,2) AS variance_percentage
 FROM
 	(SELECT
 		SUM(CASE
@@ -191,7 +193,7 @@ FROM
 ```sql
 SELECT
 	total_sales_after - total_sales_before as variance_sales,
-	ROUND((total_sales_after - total_sales_before) / total_sales_before * 100,2) as variance_percentage
+	ROUND((total_sales_after - total_sales_before) / total_sales_before * 100,2) AS variance_percentage
 FROM
 	(SELECT
 		SUM(CASE
@@ -210,8 +212,8 @@ FROM
 ```sql
 SELECT
 	calendar_year,
-	total_sales_after - total_sales_before as variance_sales,
-	ROUND((total_sales_after - total_sales_before) / total_sales_before * 100,2) as variance_percentage
+	total_sales_after - total_sales_before AS variance_sales,
+	ROUND((total_sales_after - total_sales_before) / total_sales_before * 100,2) AS variance_percentage
 FROM
 	(SELECT
 		calendar_year,
@@ -221,7 +223,7 @@ FROM
 			WHEN week_number BETWEEN 25 AND 28 THEN sales END) AS total_sales_after
 	FROM clean_weekly_sales
 	WHERE calendar_year BETWEEN 2018 AND 2020
-    GROUP BY calendar_year) as x
+    GROUP BY calendar_year) AS x
 GROUP BY calendar_year
 ORDER BY calendar_year
 ```
@@ -231,8 +233,8 @@ ORDER BY calendar_year
 ```sql
 SELECT
 	calendar_year,
-	total_sales_after - total_sales_before as variance_sales,
-	ROUND((total_sales_after - total_sales_before) / total_sales_before * 100,2) as variance_percentage
+	total_sales_after - total_sales_before AS variance_sales,
+	ROUND((total_sales_after - total_sales_before) / total_sales_before * 100,2) AS variance_percentage
 FROM
 	(SELECT
 		calendar_year,
@@ -242,7 +244,7 @@ FROM
 			WHEN week_number BETWEEN 25 AND 36 THEN sales END) AS total_sales_after
 	FROM clean_weekly_sales
 	WHERE calendar_year BETWEEN 2018 AND 2020
-    GROUP BY calendar_year) as x
+    GROUP BY calendar_year) AS x
 GROUP BY calendar_year
 ORDER BY calendar_year
 ```
@@ -258,8 +260,8 @@ SELECT
 	age_band,
 	demographic,
 	customer_type,
-	total_sales_after - total_sales_before as variance_sales,
-	ROUND((total_sales_after - total_sales_before) / total_sales_before * 100,2) as variance_percentage
+	total_sales_after - total_sales_before AS variance_sales,
+	ROUND((total_sales_after - total_sales_before) / total_sales_before * 100,2) AS variance_percentage
 FROM
 	(SELECT
 		region,
@@ -273,16 +275,18 @@ FROM
 			WHEN week_number BETWEEN 25 AND 36 THEN sales END) AS total_sales_after
 	FROM clean_weekly_sales
 	WHERE calendar_year = 2020
-	GROUP BY region,
+	GROUP BY 
+		region,
         platform,
         age_band,
         demographic,
-        customer_type) as x
-GROUP BY region,
-        platform,
-        age_band,
-        demographic,
-        customer_type
+        customer_type) AS x
+GROUP BY 
+	region,
+    platform,
+    age_band,
+    demographic,
+    customer_type
 ORDER BY variance_sales
 LIMIT 1
 

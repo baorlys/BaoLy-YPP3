@@ -16,19 +16,19 @@ FROM users
 SELECT
 	ROUND(AVG(cookie_count)) AS avg_cookie
 FROM
-(SELECT
-	user_id,
-    COUNT(cookie_id) AS cookie_count
-FROM users
-GROUP BY user_id) AS sub
+    (SELECT
+        user_id,
+        COUNT(cookie_id) AS cookie_count
+    FROM users
+    GROUP BY user_id) AS sub
 ```
 
 **3 - What is the unique number of visits by all users per month?**
 
 ```sql
 SELECT
-	MONTH(event_time) as calendar_month,
-    COUNT(DISTINCT visit_id) as visit_count
+	MONTH(event_time) AS calendar_month,
+    COUNT(DISTINCT visit_id) AS visit_count
 FROM events
 GROUP BY calendar_month
 ```
@@ -38,7 +38,7 @@ GROUP BY calendar_month
 ```sql
 SELECT
 	event_type,
-    COUNT(*) as event_count
+    COUNT(*) AS event_count
 FROM events
 GROUP BY event_type
 ```
@@ -47,7 +47,7 @@ GROUP BY event_type
 
 ```sql
 SELECT
-	COUNT(DISTINCT visit_id) / (SELECT COUNT(DISTINCT visit_id) FROM events) * 100 as percentage
+	COUNT(DISTINCT visit_id) / (SELECT COUNT(DISTINCT visit_id) FROM events) * 100 AS percentage
 FROM events AS e
 JOIN event_identifier AS ei ON e.event_type = ei.event_type
 WHERE event_name = 'Purchase'
@@ -56,17 +56,18 @@ WHERE event_name = 'Purchase'
 **6 - What is the percentage of visits which view the checkout page but do not have a purchase event?**
 
 ```sql
-SELECT ROUND((1 - SUM(purchase_count)/SUM(view_checkout_count) ) * 100,2) AS percentage
+SELECT 
+    ROUND((1 - SUM(purchase_count)/SUM(view_checkout_count) ) * 100,2) AS percentage
 FROM
-(SELECT
-	visit_id,
-    SUM(IF(event_name = 'Page View' AND page_name = 'Checkout',1,0)) AS view_checkout_count,
-    SUM(IF(event_name = 'Purchase',1,0)) AS purchase_count
-FROM events AS e
-JOIN event_identifier AS ei ON ei.event_type = e.event_type
-JOIN page_hierarchy AS ph ON ph.page_id = e.page_id
-GROUP BY visit_id
-) as x
+    (SELECT
+        visit_id,
+        SUM(IF(event_name = 'Page View' AND page_name = 'Checkout',1,0)) AS view_checkout_count,
+        SUM(IF(event_name = 'Purchase',1,0)) AS purchase_count
+    FROM events AS e
+    JOIN event_identifier AS ei ON ei.event_type = e.event_type
+    JOIN page_hierarchy AS ph ON ph.page_id = e.page_id
+    GROUP BY visit_id
+    ) AS x
 ```
 
 **7 - What are the top 3 pages by number of views?**
@@ -110,7 +111,7 @@ WHERE event_type=3)
 SELECT
 	page_name,
     SUM(IF(event_name = 'Add to Cart',1,0)) AS purchase_count
-FROM events as e
+FROM events AS e
 LEFT JOIN check_purchase AS cp ON cp.visit_id = e.visit_id
 JOIN event_identifier AS ei ON ei.event_type = e.event_type
 JOIN page_hierarchy AS ph ON ph.page_id = e.page_id
@@ -147,7 +148,7 @@ SELECT
     SUM(IF(event_name = 'Add to Cart',1,0)) AS cart_adds,
     SUM(IF(event_name = 'Add to Cart' and is_purchase IS NULL,1,0)) AS abandoned,
     SUM(IF(event_name = 'Add to Cart' and is_purchase = 1,1,0)) AS purchased
-FROM events as e
+FROM events AS e
 LEFT JOIN check_purchase AS cp ON cp.visit_id = e.visit_id
 JOIN event_identifier AS ei ON ei.event_type = e.event_type
 JOIN page_hierarchy AS ph ON ph.page_id = e.page_id
@@ -168,9 +169,9 @@ SELECT
     product_category,
     SUM(IF(event_name = 'Page View',1,0)) AS views,
     SUM(IF(event_name = 'Add to Cart',1,0)) AS cart_adds,
-    SUM(IF(event_name = 'Add to Cart' and is_purchase IS NULL,1,0)) AS abandoned,
-    SUM(IF(event_name = 'Add to Cart' and is_purchase = 1,1,0)) AS purchased
-FROM events as e
+    SUM(IF(event_name = 'Add to Cart' AND is_purchase IS NULL,1,0)) AS abandoned,
+    SUM(IF(event_name = 'Add to Cart' AND is_purchase = 1,1,0)) AS purchased
+FROM events AS e
 LEFT JOIN check_purchase AS cp ON cp.visit_id = e.visit_id
 JOIN event_identifier AS ei ON ei.event_type = e.event_type
 JOIN page_hierarchy AS ph ON ph.page_id = e.page_id
@@ -184,7 +185,10 @@ GROUP BY product_category
 SELECT
 	*
 FROM product_analysis
-ORDER BY views DESC,cart_adds DESC,purchased DESC
+ORDER BY 
+    views DESC,
+    cart_adds DESC,
+    purchased DESC
 
 ```
 
@@ -262,11 +266,11 @@ SELECT
     campaign_name,
     SUM(IF(event_type = 4,1,0)) AS impression,
     SUM(IF(event_type = 5,1,0)) AS click,
-	GROUP_CONCAT(IF(event_type = 2 and product_id IS NOT NULL,page_name,NULL)) as cart_products
+	GROUP_CONCAT(IF(event_type = 2 AND product_id IS NOT NULL,page_name,NULL)) AS cart_products
 FROM subtable AS s
 JOIN users AS u ON u.cookie_id = s.cookie_id
 JOIN page_hierarchy AS ph ON ph.page_id = s.page_id
-LEFT JOIN campaign_identifier AS ci on s.event_time BETWEEN ci.start_date AND ci.end_date
+LEFT JOIN campaign_identifier AS ci ON s.event_time BETWEEN ci.start_date AND ci.end_date
 GROUP BY
 	visit_id,
     user_id,

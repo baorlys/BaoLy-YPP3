@@ -41,12 +41,9 @@ ORDER BY s.plan_id
 
 ```sql
 SELECT
-    SUM(
-		IF(plan_name = 'churn',1,0)
-        ) AS churn_count,
-    ROUND(SUM(
-		IF(plan_name = 'churn',1,0)
-        )/COUNT(DISTINCT customer_id) *100,1)  AS churn_count
+    SUM(IF(plan_name = 'churn',1,0)) AS churn_count,
+    ROUND(SUM(IF(plan_name = 'churn',1,0)) / 
+			COUNT(DISTINCT customer_id) *100,1)  AS churn_count
 FROM subscriptions AS s
 JOIN plans AS p ON s.plan_id = p.plan_id
 
@@ -58,20 +55,20 @@ JOIN plans AS p ON s.plan_id = p.plan_id
 WITH cte_rank AS (
 	SELECT
 		*,
-        ROW_NUMBER() OVER (PARTITION BY customer_id) as ranking
+        ROW_NUMBER() OVER (PARTITION BY customer_id) AS ranking
 	FROM subscriptions
 )
 
 SELECT
-	COUNT(*) as customer_count,
-    ROUND(COUNT(*)/(SELECT COUNT(DISTINCT customer_id) from subscriptions)*100) as percentage
+	COUNT(*) AS customer_count,
+    ROUND(COUNT(*)/(SELECT COUNT(DISTINCT customer_id) FROM subscriptions)*100) AS percentage
 FROM cte_rank
 WHERE customer_id IN
 		(SELECT
 			customer_id
 		FROM cte_rank
-		WHERE (ranking = 1 and plan_id = 0))
-	AND ranking = 2 and plan_id = 4
+		WHERE (ranking = 1 AND plan_id = 0))
+	AND ranking = 2 AND plan_id = 4
 ```
 
 **6 - What is the number and percentage of customer plans after their initial free trial?**
@@ -79,13 +76,13 @@ WHERE customer_id IN
 ```sql
 SELECT
 	plan_id,
-    COUNT(customer_id) as customer_count,
-	ROUND(COUNT(customer_id)/(SELECT COUNT(DISTINCT customer_id) FROM subscriptions)*100,1) as percentage
+    COUNT(customer_id) AS customer_count,
+	ROUND(COUNT(customer_id)/(SELECT COUNT(DISTINCT customer_id) FROM subscriptions)*100,1) AS percentage
 FROM
-	(SELECT
-		*,
-		LAG(plan_id) OVER (PARTITION BY customer_id) as previous_plan
-	FROM subscriptions) as sub
+	(	SELECT
+			*,
+			LAG(plan_id) OVER (PARTITION BY customer_id) AS previous_plan
+		FROM subscriptions) AS subquery
 WHERE previous_plan = 0
 GROUP BY plan_id
 ORDER BY plan_id
@@ -97,11 +94,11 @@ ORDER BY plan_id
 SELECT
 	plan_id,
     COUNT(customer_id) AS customer_count,
-    ROUND(COUNT(customer_id)/(SELECT COUNT(DISTINCT customer_id) FROM subscriptions)*100,1) as percentage
+    ROUND(COUNT(customer_id)/(SELECT COUNT(DISTINCT customer_id) FROM subscriptions)*100,1) AS percentage
 FROM (
 	SELECT
 		*,
-		LAST_VALUE(plan_id) OVER(PARTITION BY customer_id) as last_plan_id
+		LAST_VALUE(plan_id) OVER(PARTITION BY customer_id) AS last_plan_id
 	FROM subscriptions
     WHERE start_date <= '2020-12-31') AS subquery
 WHERE plan_id = last_plan_id
@@ -114,16 +111,16 @@ ORDER BY plan_id
 
 ```sql
 SELECT
-	COUNT(DISTINCT customer_id) as customer_count
+	COUNT(DISTINCT customer_id) AS customer_count
 FROM subscriptions
-WHERE YEAR(start_date) = 2020 and plan_id = 3
+WHERE YEAR(start_date) = 2020 AND plan_id = 3
 ```
 
 **9 - How many days on average does it take for a customer to an annual plan from the day they join Foodie-Fi?**
 
 ```sql
 SELECT
-	ROUND(AVG(TIMESTAMPDIFF(DAY, start_date, annual_date)),0) as avg_date_join
+	ROUND(AVG(TIMESTAMPDIFF(DAY, start_date, annual_date)),0) AS avg_date_join
 FROM subscriptions AS s1
 JOIN (
 	SELECT
@@ -138,9 +135,9 @@ WHERE plan_id = 0
 
 ```sql
 SELECT
-	CONCAT(TIMESTAMPDIFF(MONTH, start_date, annual_date) *30,' - ',(TIMESTAMPDIFF(MONTH, start_date, annual_date) + 1)*30,' days') as period,
-    TIMESTAMPDIFF(MONTH, start_date, annual_date) as period_month,
-    COUNT(*) as customer_count
+	CONCAT(TIMESTAMPDIFF(MONTH, start_date, annual_date) *30,' - ',(TIMESTAMPDIFF(MONTH, start_date, annual_date) + 1)*30,' days') AS period,
+    TIMESTAMPDIFF(MONTH, start_date, annual_date) AS period_month,
+    COUNT(*) AS customer_count
 FROM subscriptions AS s1
 JOIN (
 	SELECT
@@ -158,13 +155,13 @@ ORDER BY period_month
 
 ```sql
 SELECT
-    COUNT(DISTINCT customer_id) as customer_count
+    COUNT(DISTINCT customer_id) AS customer_count
 FROM
-	(SELECT
-		*,
-		LAG(plan_id) OVER (PARTITION BY customer_id) as previous_plan
-	FROM subscriptions) as sub
-WHERE plan_id = 2 and previous_plan = 3
+	(	SELECT
+			*,
+			LAG(plan_id) OVER (PARTITION BY customer_id) AS previous_plan
+		FROM subscriptions) AS sub
+WHERE plan_id = 2 AND previous_plan = 3
 
 ```
 

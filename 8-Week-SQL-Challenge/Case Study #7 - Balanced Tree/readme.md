@@ -18,7 +18,7 @@ GROUP BY product_name
 ```sql
 SELECT
 	product_name,
-  SUM(qty * s.price) AS total_revenue
+    SUM(qty * s.price) AS total_revenue
 FROM sales AS s
 JOIN product_details AS pd ON pd.product_id = s.prod_id
 GROUP BY product_name
@@ -76,7 +76,7 @@ FROM revenue_quartiles;
 
 ```sql
 SELECT
-	ROUND(SUM(price * qty * discount/100)/(SELECT COUNT(DISTINCT txn_id) FROM sales),2) as avg_discount
+	ROUND(SUM(price * qty * discount/100)/(SELECT COUNT(DISTINCT txn_id) FROM sales),2) AS avg_discount
 FROM sales
 ```
 
@@ -93,8 +93,8 @@ FROM sales
 
 ```sql
 SELECT
-	ROUND(SUM(IF(member,qty*price,0))/(SELECT COUNT(DISTINCT txn_id) FROM sales WHERE member),2) as member_avg_revenue,
-    ROUND(SUM(IF(!member,qty*price,0))/(SELECT COUNT(DISTINCT txn_id) FROM sales WHERE !member),2) as non_member_avg_revenue
+	ROUND(SUM(IF(member,qty*price,0))/(SELECT COUNT(DISTINCT txn_id) FROM sales WHERE member),2) AS member_avg_revenue,
+    ROUND(SUM(IF(!member,qty*price,0))/(SELECT COUNT(DISTINCT txn_id) FROM sales WHERE !member),2) AS non_member_avg_revenue
 FROM sales
 ```
 
@@ -118,9 +118,9 @@ LIMIT 3
 ```sql
 SELECT
 	segment_name,
-	SUM(qty) as total_quantity,
-  SUM(qty * s.price) AS total_revenue,
-  SUM(qty * s.price * discount/100) AS total_discount
+	SUM(qty) AS total_quantity,
+    SUM(qty * s.price) AS total_revenue,
+    SUM(qty * s.price * discount/100) AS total_discount
 FROM sales AS s
 JOIN product_details AS pd ON pd.product_id = s.prod_id
 GROUP BY segment_name;
@@ -135,14 +135,14 @@ SELECT
     product_name,
     total_quantity
 FROM
-(SELECT
-	product_name,
-    segment_name,
-    SUM(qty) AS total_quantity,
-    DENSE_RANK() OVER (PARTITION BY segment_name ORDER BY SUM(qty) DESC) AS ranking
-FROM sales AS s
-JOIN product_details AS pd ON pd.product_id = s.prod_id
-GROUP BY product_name,segment_name) as x
+    (SELECT
+        product_name,
+        segment_name,
+        SUM(qty) AS total_quantity,
+        DENSE_RANK() OVER (PARTITION BY segment_name ORDER BY SUM(qty) DESC) AS ranking
+    FROM sales AS s
+    JOIN product_details AS pd ON pd.product_id = s.prod_id
+    GROUP BY product_name,segment_name) AS x
 WHERE ranking = 1
 
 ```
@@ -152,7 +152,7 @@ WHERE ranking = 1
 ```sql
 SELECT
 	category_name,
-	SUM(qty) as total_quantity,
+	SUM(qty) AS total_quantity,
 	SUM(qty * s.price) AS total_revenue,
 	SUM(qty * s.price * discount/100) AS total_discount
 FROM sales AS s
@@ -169,14 +169,14 @@ SELECT
     product_name,
     total_quantity
 FROM
-(SELECT
-	product_name,
-    category_name,
-    SUM(qty) AS total_quantity,
-    DENSE_RANK() OVER (PARTITION BY category_name ORDER BY SUM(qty) DESC) AS ranking
-FROM sales AS s
-JOIN product_details AS pd ON pd.product_id = s.prod_id
-GROUP BY product_name,category_name) as x
+    (SELECT
+        product_name,
+        category_name,
+        SUM(qty) AS total_quantity,
+        DENSE_RANK() OVER (PARTITION BY category_name ORDER BY SUM(qty) DESC) AS ranking
+    FROM sales AS s
+    JOIN product_details AS pd ON pd.product_id = s.prod_id
+    GROUP BY product_name,category_name) AS x
 WHERE ranking = 1
 
 ```
@@ -231,7 +231,8 @@ ORDER BY pd.category_name
 
 SELECT
 	category_name,
-	SUM(qty * s.price)/(SELECT SUM(qty*price) OVER() FROM sales LIMIT 1)*100 AS total_revenue
+	SUM(qty * s.price)/
+        (SELECT SUM(qty*price) OVER() FROM sales LIMIT 1)*100 AS total_revenue
 FROM sales AS s
 JOIN product_details AS pd ON pd.product_id = s.prod_id
 GROUP BY category_name
@@ -244,7 +245,7 @@ WITH count_prod_trans AS
 (SELECT
 	product_name,
     txn_id,
-    ROW_NUMBER() OVER(PARTITION BY product_name) as ranking
+    ROW_NUMBER() OVER(PARTITION BY product_name) AS ranking
 FROM sales AS s
 JOIN product_details AS pd ON pd.product_id = s.prod_id
 GROUP BY product_name,txn_id)
@@ -259,10 +260,10 @@ FROM count_prod_trans
 ```sql
 
 SELECT
-	s1.prod_id as prod_1,
-    s2.prod_id as prod_2,
-    s3.prod_id as prod_3,
-    COUNT(*) as count
+	s1.prod_id AS prod_1,
+    s2.prod_id AS prod_2,
+    s3.prod_id AS prod_3,
+    COUNT(*) AS count
 FROM sales s1
 JOIN sales s2 ON s1.txn_id = s2.txn_id AND s1.prod_id > s2.prod_id
 JOIN sales s3 ON s1.txn_id = s3.txn_id AND s2.prod_id > s3.prod_id

@@ -40,14 +40,14 @@ WHERE interest_id IS NULL
 
 ```sql
 SELECT
-	COUNT(DISTINCT interest_id) as metric_count,
+	COUNT(DISTINCT interest_id) AS metric_count,
 	COUNT(DISTINCT id) AS map_count,
     COUNT(DISTINCT id) - COUNT(DISTINCT interest_id) AS not_in_metric
 FROM interest_metrics AS metric
 RIGHT JOIN interest_map AS map ON metric.interest_id = map.id
 UNION
 SELECT
-	COUNT(DISTINCT interest_id) as metric_count,
+	COUNT(DISTINCT interest_id) AS metric_count,
 	COUNT(DISTINCT id) AS map_count,
     COUNT(DISTINCT interest_id) - COUNT(DISTINCT id) AS not_in_metric
 FROM interest_metrics AS metric
@@ -106,7 +106,7 @@ FROM interest_metrics;
 -- 14 unique months
 SELECT
 	interest_id,
-  COUNT(*) AS frequency
+    COUNT(*) AS frequency
 FROM interest_metrics
 GROUP BY interest_id
 HAVING frequency = 14
@@ -118,7 +118,7 @@ HAVING frequency = 14
 WITH count_frequency AS
 (SELECT
 	interest_id,
-    COUNT(month_year) as month_frequency
+    COUNT(month_year) AS month_frequency
 FROM interest_metrics
 GROUP BY interest_id),
 count_interest AS
@@ -147,7 +147,7 @@ WHERE cumulative > 90
 WITH count_frequency AS
 (SELECT
 	interest_id,
-    COUNT(month_year) as month_frequency
+    COUNT(month_year) AS month_frequency
 FROM interest_metrics
 GROUP BY interest_id
 HAVING month_frequency <= 6 )
@@ -176,7 +176,7 @@ CREATE VIEW filtered_data AS
 WITH count_frequency AS
 (SELECT
 	interest_id,
-    COUNT(month_year) as month_frequency
+    COUNT(month_year) AS month_frequency
 FROM interest_metrics
 GROUP BY interest_id
 HAVING month_frequency >= 6 )
@@ -269,10 +269,13 @@ SELECT
 FROM
 	filtered_data AS filtered_metric
 JOIN interest_map AS map ON filtered_metric.interest_id = map.id
-GROUP BY interest_id,
-		interest_name,
-		interest_summary
-ORDER BY avg_composition DESC, avg_ranking ASC
+GROUP BY 
+    interest_id,
+	interest_name,
+	interest_summary
+ORDER BY 
+    avg_composition DESC, 
+    avg_ranking ASC
 LIMIT 10
 ```
 

@@ -5,22 +5,25 @@
 **1 - How many pizzas were ordered?**
 
 ```sql
-SELECT COUNT(order_id) AS pizza_order_count
+SELECT 
+	COUNT(order_id) AS pizza_order_count
 FROM customer_orders
 ```
 
 **2 - How many unique customer orders were made?**
 
 ```sql
-SELECT COUNT(DISTINCT order_id) AS unique_customer_count
+SELECT 
+	COUNT(DISTINCT order_id) AS unique_customer_count
 FROM customer_orders
 ```
 
 **3 - How many successful orders were delivered by each runner?**
 
 ```sql
-SELECT runner_id,
-		COUNT(pickup_time) AS count
+SELECT 
+	runner_id,
+	COUNT(pickup_time) AS count
 FROM runner_orders
 WHERE pickup_time != 'null'
 GROUP BY runner_id
@@ -30,17 +33,19 @@ GROUP BY runner_id
 **4 - How many of each type of pizza was delivered?**
 
 ```sql
-WITH cte_order_id_success_delivered as (
-SELECT order_id
+WITH cte_order_id_success_delivered AS (
+SELECT 
+	order_id
 FROM runner_orders
 WHERE pickup_time != 'null'
 )
-
 SELECT
-		pizza_id,
-	  COUNT(order_id)
+	pizza_id,
+	COUNT(order_id)
 FROM customer_orders
-WHERE order_id IN ( SELECT order_id FROM cte_order_id_success_delivered)
+WHERE order_id IN (	SELECT 
+						order_id 
+					FROM cte_order_id_success_delivered)
 GROUP BY pizza_id
 
 ```
@@ -50,9 +55,9 @@ GROUP BY pizza_id
 ```sql
 SELECT
 	customer_id,
-  pizza_name,
-  COUNT(pn.pizza_id) AS pizza_count
-FROM customer_orders as co
+ 	pizza_name,
+  	COUNT(pn.pizza_id) AS pizza_count
+FROM customer_orders AS co
 JOIN pizza_names AS pn ON pn.pizza_id = co.pizza_id
 GROUP BY customer_id, pizza_name
 ORDER BY customer_id
@@ -62,8 +67,8 @@ ORDER BY customer_id
 
 ```sql
 SELECT
-		order_id,
-		COUNT(pizza_id) AS pizza_count
+	order_id,
+	COUNT(pizza_id) AS pizza_count
 FROM customer_orders
 GROUP BY order_id
 ```
@@ -71,23 +76,25 @@ GROUP BY order_id
 **7 - For each customer, how many delivered pizzas had at least 1 change and how many had no changes?**
 
 ```sql
-WITH cte_order_id_success_delivered as (
-SELECT order_id
+WITH cte_order_id_success_delivered AS (
+SELECT 
+	order_id
 FROM runner_orders
 WHERE pickup_time != 'null'
 )
 
 SELECT
-		customer_id,
+	customer_id,
     COUNT(CASE
-					WHEN (exclusions not in ('null','') and exclusions is not NULL)
-					or ( extras not in ('null','') and extras is not NULL) THEN 1
-		END) as at_least_1_change,
+			WHEN (exclusions NOT IN ('null','') AND exclusions IS NOT NULL) OR 
+				( extras NOT OM ('null','') AND extras IS NOT NULL) THEN 1
+			END) AS at_least_1_change,
 	count(CASE
-			WHEN (exclusions in ('null','') or exclusions is NULL)  and ( extras in ('null','')  or extras is NULL) THEN 1
-		END) as no_change
+			WHEN (exclusions OM ('null','') OR exclusions IS NULL)  AND 
+				( extras OM ('null','')  OR extras IS NULL) THEN 1
+			END) AS no_change
 FROM customer_orders
-WHERE order_id in (SELECT order_id FROM cte_order_id_success_delivered)
+WHERE order_id OM (SELECT order_id FROM cte_order_id_success_delivered)
 GROUP BY customer_id
 ```
 
@@ -96,10 +103,12 @@ GROUP BY customer_id
 ```sql
 SELECT
     count(CASE
-			WHEN (exclusions not in ('null','') and exclusions is not NULL)  and ( extras not in ('null','') and extras is not NULL) THEN 1
-		END) as pizza_count_w_exclusions_extras
+			WHEN (exclusions NOT IN ('null','') AND exclusions IS NOT NULL)  AND ( extras NOT IN ('null','') AND extras IS NOT NULL) THEN 1
+			END) AS pizza_count_w_exclusions_extras
 FROM customer_orders
-WHERE order_id in (SELECT order_id FROM cte_order_id_success_delivered)
+WHERE order_id IN (	SELECT 
+						order_id 
+					FROM cte_order_id_success_delivered)
 ```
 
 **9 - What was the total volume of pizzas ordered for each hour of the day?**
@@ -127,7 +136,7 @@ FROM
     customer_orders
 GROUP BY
     date_of_week
-ORDER BY order_count desc
+ORDER BY order_count DESC
 ```
 
 # **B. Runner and Customer Experience**
@@ -159,12 +168,12 @@ FROM (
 
 ```sql
 SELECT pizza_count,
-		AVG(avg_pickup_time) AS avg_pickup_time
+	AVG(avg_pickup_time) AS avg_pickup_time
 FROM
 	(SELECT
-			ro.order_id,
-			COUNT(pizza_id) AS pizza_count,
-			AVG(TIMESTAMPDIFF(MINUTE,order_time,pickup_time)) AS avg_pickup_time
+		ro.order_id,
+		COUNT(pizza_id) AS pizza_count,
+		AVG(TIMESTAMPDIFF(MINUTE,order_time,pickup_time)) AS avg_pickup_time
 	FROM runner_orders AS ro
 	JOIN customer_orders AS co ON ro.order_id = co.order_id
 	GROUP BY ro.order_id) AS subquery
@@ -189,7 +198,7 @@ GROUP BY customer_id
 ```sql
 
 SELECT
-	MAX(CAST(duration AS FLOAT)) - MIN(CAST(duration AS FLOAT)) as delivery_time_difference
+	MAX(CAST(duration AS FLOAT)) - MIN(CAST(duration AS FLOAT)) AS delivery_time_difference
 FROM runner_orders
 WHERE pickup_time != 'null'
 ```
@@ -199,7 +208,7 @@ WHERE pickup_time != 'null'
 ```sql
 SELECT
 	runner_id,
-    ROUND(CAST(distance AS FLOAT)/CAST(duration AS FLOAT )*60,2) as avg_speed
+    ROUND(CAST(distance AS FLOAT)/CAST(duration AS FLOAT )*60,2) AS avg_speed
 FROM runner_orders
 WHERE pickup_time != 'null'
 ```
@@ -211,9 +220,8 @@ WHERE pickup_time != 'null'
 SELECT
 	runner_id,
     ROUND(SUM(CASE
-			WHEN pickup_time != 'null' THEN 1
-			ELSE 0 END
-        )/COUNT(*)*100,0) as success_rate
+				WHEN pickup_time != 'null' THEN 1
+				ELSE 0 END ) / COUNT(*)*100,0) AS success_rate
 FROM runner_orders
 GROUP BY runner_id
 ```
@@ -240,11 +248,11 @@ SELECT
 	topping_id,
     topping_name,
     SUM(CASE
-		WHEN FIND_IN_SET(topping_id,REPLACE(extras,' ','')) != 0 THEN 1
-        ELSE 0 END) as topping_count
+			WHEN FIND_IN_SET(topping_id,REPLACE(extras,' ','')) != 0 THEN 1
+        	ELSE 0 END) AS topping_count
 FROM pizza_toppings
 JOIN customer_orders
-WHERE (extras not in ('null','') and extras is not NULL)
+WHERE (extras NOT IN ('null','') AND extras IS NOT NULL)
 GROUP BY topping_id,topping_name
 HAVING topping_count > 0
 ```
@@ -256,11 +264,11 @@ SELECT
 	topping_id,
     topping_name,
     SUM(CASE
-		WHEN FIND_IN_SET(topping_id,REPLACE(exclusions,' ','')) != 0 THEN 1
-        ELSE 0 END) as topping_count
+			WHEN FIND_IN_SET(topping_id,REPLACE(exclusions,' ','')) != 0 THEN 1
+        	ELSE 0 END) AS topping_count
 FROM pizza_toppings
 JOIN customer_orders
-WHERE (exclusions not in ('null','') and exclusions is not NULL)
+WHERE (exclusions NOT IN ('null','') AND exclusions IS NOT NULL)
 GROUP BY topping_id,topping_name
 HAVING topping_count > 0
 
@@ -278,19 +286,21 @@ SELECT
 	CONCAT(pizza_names.pizza_name,
 		IF(exclusions NOT IN ('null','') AND exclusions IS NOT NULL,
 			CONCAT(' - Exclude ',
-				(SELECT GROUP_CONCAT(topping_name separator  ', ')
-				FROM pizza_toppings
-				WHERE FIND_IN_SET(topping_id,REPLACE(exclusions,' ','')) != 0
-				GROUP BY pizza_names.pizza_name
+				(	SELECT 
+						GROUP_CONCAT(topping_name separator  ', ')
+					FROM pizza_toppings
+					WHERE FIND_IN_SET(topping_id,REPLACE(exclusions,' ','')) != 0
+					GROUP BY pizza_names.pizza_name
 				)
 			)
         , ''),
         IF(extras NOT IN ('null','') AND extras IS NOT NULL,
 			CONCAT(' - Extra ',
-				(SELECT GROUP_CONCAT(topping_name separator  ', ')
-				FROM pizza_toppings
-				WHERE FIND_IN_SET(topping_id,REPLACE(extras,' ','')) != 0
-				GROUP BY pizza_names.pizza_name
+				(	SELECT 
+						GROUP_CONCAT(topping_name separator  ', ')
+					FROM pizza_toppings
+					WHERE FIND_IN_SET(topping_id,REPLACE(extras,' ','')) != 0
+					GROUP BY pizza_names.pizza_name
 				)
             )
         , '')) AS order_item
@@ -308,7 +318,9 @@ WITH get_toppings AS
 (SELECT
 	co.order_id,
     pizza_name,
-	CASE WHEN extras != '' THEN CONCAT(' ',toppings,CONCAT(', ',extras,',')) ELSE CONCAT(' ',toppings,',')  END AS topping,
+	CASE 
+		WHEN extras != '' THEN CONCAT(' ',toppings,CONCAT(', ',extras,',')) 
+		ELSE CONCAT(' ',toppings,',')  END AS topping,
     CONCAT(' ',exclusions,',') AS exclusions,
 	ROW_NUMBER() OVER() AS pizza_number
 FROM customer_orders AS co
@@ -316,6 +328,7 @@ JOIN pizza_recipes AS pr ON co.pizza_id = pr.pizza_id
 JOIN runner_orders AS ro ON ro.order_id = co.order_id
 JOIN pizza_names AS pn  ON pn.pizza_id = co.pizza_id
 WHERE pickup_time != 'null'),
+
 count_add_sub AS
 (SELECT
 	order_id,
@@ -323,25 +336,30 @@ count_add_sub AS
     pizza_number,
 	topping_id,
     topping_name,
-
-	SUM(CASE WHEN LENGTH(topping) - LENGTH(REPLACE(topping,CONCAT(topping_id,','),' ')) > 0 AND topping_id BETWEEN 10 AND 99
-				THEN ROUND(ROUND((LENGTH(topping) - LENGTH(REPLACE(topping,CONCAT(' ',topping_id,','),' ')))/2) -1 * ROUND((LENGTH(topping) - LENGTH(REPLACE(topping,CONCAT(' ',topping_id,','),' ')))/2)/2)
+	SUM(CASE 
+			WHEN LENGTH(topping) - LENGTH(REPLACE(topping,CONCAT(topping_id,','),' ')) > 0 AND topping_id BETWEEN 10 AND 99
+				THEN ROUND(ROUND((LENGTH(topping) - LENGTH(REPLACE(topping,CONCAT(' ',topping_id,','),' ')))/2) -1 * ROUND((LENGTH(topping) - 
+					LENGTH(REPLACE(topping,CONCAT(' ',topping_id,','),' ')))/2)/2)
 			ELSE ROUND((LENGTH(topping) - LENGTH(REPLACE(topping,CONCAT(' ',topping_id,','),' ')))/2) END) AS count_add,
-	SUM(CASE WHEN LENGTH(exclusions) - LENGTH(REPLACE(exclusions,CONCAT(topping_id,','),' ')) > 0 AND topping_id BETWEEN 10 AND 99
-				THEN ROUND(ROUND((LENGTH(exclusions) - LENGTH(REPLACE(topping,CONCAT(' ',topping_id,','),' ')))/2) -1 * ROUND((LENGTH(exclusions) - LENGTH(REPLACE(exclusions,CONCAT(' ',topping_id,','),' ')))/2)/2)
+	SUM(CASE 
+			WHEN LENGTH(exclusions) - LENGTH(REPLACE(exclusions,CONCAT(topping_id,','),' ')) > 0 AND topping_id BETWEEN 10 AND 99
+				THEN ROUND(ROUND((LENGTH(exclusions) - LENGTH(REPLACE(topping,CONCAT(' ',topping_id,','),' ')))/2) -1 * ROUND((LENGTH(exclusions) - 	LENGTH(REPLACE(exclusions,CONCAT(' ',topping_id,','),' ')))/2)/2)
 			ELSE ROUND((LENGTH(exclusions) - LENGTH(REPLACE(exclusions,CONCAT(' ',topping_id,','),' ')))/2) END) AS count_sub
 FROM pizza_toppings
 JOIN get_toppings
-GROUP BY order_id,
+GROUP BY 
+	order_id,
     pizza_name,
 	topping_id,
     topping_name,
     pizza_number
 ORDER BY order_id)
+
 SELECT
 	order_id,
 	CONCAT(pizza_name,': ',GROUP_CONCAT(
-		CASE WHEN count_add - count_sub = 1 THEN topping_name
+		CASE 
+			WHEN count_add - count_sub = 1 THEN topping_name
 			WHEN count_add - count_sub > 1 THEN CONCAT(count_add-count_sub,'x',topping_name) END
         separator ', '
     )) AS order_item
@@ -356,17 +374,18 @@ GROUP BY order_id,pizza_name,pizza_number
 WITH get_toppings AS
 (SELECT
 	co.order_id,
-	CASE WHEN extras != '' THEN CONCAT(' ',toppings,CONCAT(', ',extras,',')) ELSE CONCAT(' ',toppings,',')  END AS topping,
+	CASE 
+		WHEN extras != '' THEN CONCAT(' ',toppings,CONCAT(', ',extras,',')) 
+		ELSE CONCAT(' ',toppings,',')  END AS topping,
     CONCAT(' ',exclusions,',') AS exclusions
 FROM customer_orders AS co
 JOIN pizza_recipes AS pr ON co.pizza_id = pr.pizza_id
 JOIN runner_orders AS ro ON ro.order_id = co.order_id
 WHERE pickup_time != 'null'),
-count_add_sub AS (SELECT
-
+count_add_sub AS 
+(SELECT
 	topping_id,
     topping_name,
-
 	SUM(CASE WHEN LENGTH(topping) - LENGTH(REPLACE(topping,CONCAT(topping_id,','),' ')) > 0 AND topping_id BETWEEN 10 AND 99
 				THEN ROUND(ROUND((LENGTH(topping) - LENGTH(REPLACE(topping,CONCAT(' ',topping_id,','),' ')))/2) -1 * ROUND((LENGTH(topping) - LENGTH(REPLACE(topping,CONCAT(' ',topping_id,','),' ')))/2)/2)
 			ELSE ROUND((LENGTH(topping) - LENGTH(REPLACE(topping,CONCAT(' ',topping_id,','),' ')))/2) END) AS count_add,
@@ -376,7 +395,8 @@ count_add_sub AS (SELECT
 
 FROM pizza_toppings
 JOIN get_toppings
-GROUP BY topping_id,
+GROUP BY 
+	topping_id,
     topping_name)
 SELECT
 	topping_id,
@@ -393,8 +413,8 @@ FROM count_add_sub
 ```sql
 SELECT
 	SUM(CASE
-		WHEN pizza_name = 'Meatlovers' THEN 12
-        ELSE 10 END) as total
+			WHEN pizza_name = 'Meatlovers' THEN 12
+        	ELSE 10 END) as total
 FROM customer_orders AS co
 JOIN pizza_names AS pn ON co.pizza_id = pn.pizza_id
 JOIN runner_orders AS ro ON co.order_id = ro.order_id
@@ -408,8 +428,8 @@ WHERE pickup_time != 'null'
 ```sql
 SELECT
 	SUM(CASE
-		WHEN pizza_name = 'Meatlovers' THEN IF(extras NOT IN ('null','') and extras IS NOT NULL ,LENGTH(extras) - LENGTH(REPLACE(extras, ',', '')) + 1 + 12,12)
-        ELSE IF(extras NOT IN ('null','') and extras IS NOT NULL ,LENGTH(extras) - LENGTH(REPLACE(extras, ',', '')) + 1 + 10,10) END) as total
+			WHEN pizza_name = 'Meatlovers' THEN IF(extras NOT IN ('null','') and extras IS NOT NULL ,LENGTH(extras) - LENGTH(REPLACE(extras, ',', '')) + 1 + 12,12)
+        	ELSE IF(extras NOT IN ('null','') and extras IS NOT NULL ,LENGTH(extras) - LENGTH(REPLACE(extras, ',', '')) + 1 + 10,10) END) as total
 FROM customer_orders AS co
 JOIN pizza_names AS pn ON co.pizza_id = pn.pizza_id
 JOIN runner_orders AS ro ON co.order_id = ro.order_id
@@ -427,7 +447,7 @@ CREATE TABLE ratings (
 );
 
 INSERT INTO ratings VALUES
-		(1,1),
+	(1,1),
     (2,3),
     (3,5),
     (4,4),
@@ -465,7 +485,8 @@ SELECT
 FROM customer_orders AS co
 JOIN runner_orders AS ro ON co.order_id = ro.order_id
 JOIN ratings AS r ON r.order_id = co.order_id
-GROUP BY customer_id,
+GROUP BY 
+	customer_id,
     co.order_id,
     runner_id,
     rating,
@@ -484,8 +505,8 @@ WITH total_without_delivery AS
 (SELECT
 	co.order_id,
 	SUM(CASE
-		WHEN pizza_name = 'Meatlovers' THEN 12
-        ELSE 10 END)  as total
+			WHEN pizza_name = 'Meatlovers' THEN 12
+        	ELSE 10 END)  as total
 FROM customer_orders AS co
 JOIN pizza_names AS pn ON co.pizza_id = pn.pizza_id
 JOIN runner_orders AS ro ON co.order_id = ro.order_id
