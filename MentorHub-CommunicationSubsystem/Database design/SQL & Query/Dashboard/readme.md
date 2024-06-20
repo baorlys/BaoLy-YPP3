@@ -1,7 +1,7 @@
 # Dashboard
 
 ![img](../../Entity/Dashboard%20-%20Entity.png)
-![img](../../Database%20design/Dashboard.png)
+![img](../../Detail/Dashboard.png)
 ![img](../../../UX-UI%20design/Version3/Dashboard/Dashboard.png)
 
 **[DBML FILE](dbml.md)**
