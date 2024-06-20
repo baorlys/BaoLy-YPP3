@@ -2,26 +2,24 @@
 
 Created time: May 24, 2024 9:12 AM
 
-# Bao Ly - 24/05
-
-What did I do yesterday ?
+**What did I do yesterday ?**
 
 - Completed Program Management Subsystem use-case diagram with Khoi Nguyen and contribute to completed other use-case diagram.
 - In progress Communication Subsystem.
 
-What will I do today ?
+**What will I do today ?**
 
 - Review with team and fix (if need) use-case diagram.
 - Learn UX/UI basic knowledge with Mr. Thinh Tran.
 - Send output to get feedback.
 
-What ( if anything) is blocking my progress ?
+**What ( if anything) is blocking my progress ?**
 
 - None
 
 ![0c017d7c-93dd-45f7-b110-c44e47b51c39.png](0c017d7c-93dd-45f7-b110-c44e47b51c39.png)
 
-Description:
+*Description:*
 
 - Registration: guest đăng kí → become Mentee/Mentor/Organization (user trong hệ thống)
 - Authentication: guest sau khi đăng kí sẽ đăng nhập → có những quyền truy cập (role & permission)

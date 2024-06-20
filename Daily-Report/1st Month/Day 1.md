@@ -2,11 +2,13 @@
 
 Created time: May 20, 2024 5:17 PM
 
-# What did I do yesterday ?
+
+**What did I do yesterday ?**
+
 
 - none
 
-# What will I do today ?
+**What will I do today ?**
 
 - [ ]  Market Research
     - g2.com
@@ -42,6 +44,6 @@ Created time: May 20, 2024 5:17 PM
     [https://www.mindmeister.com/app/map/3289394529](https://www.mindmeister.com/app/map/3289394529)
     
 
-# What (if anything) blocking your progress ?
+**What (if anything) blocking your progress ?**
 
 - none

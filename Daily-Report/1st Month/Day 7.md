@@ -17,6 +17,4 @@ What ( if anything) is blocking my progress ?
 
 - None
 
-Dạ em gửi output UI Design cho Communication Subsystem.
-
 Prompt em sử dụng trong bài: Short description for Discord, Zalo, Slack, Teams ( Các ứng dụng mà em tham khảo UI)

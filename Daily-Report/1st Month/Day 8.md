@@ -18,4 +18,4 @@ What ( if anything) is blocking my progress ?
 
 - None
 
-Dạ em gửi anh output UI Design của Communication Subsystem, sau khi em tham khảo UI của các product Thuỵ Sĩ (IntraHub, Threema) thì em đã tối giản lại UI Design của mình và design thêm UI của các chức năng khác
+Sau khi tham khảo UI của các product Thuỵ Sĩ (IntraHub, Threema) thì em đã tối giản lại UI Design của mình và design thêm UI của các chức năng khác
