@@ -1,6 +1,16 @@
 # Case Study #2 - Pizza Runner
 
-# **A. Pizza Metrics**
+**4 SECTIONS**
+
+[**A. Pizza Metrics**](##**A.-Pizza-Metrics**)
+
+[**B. Runner and Customer Experience**](##**B.-Runnerand-Customer-Experience**)
+
+[**C. Ingredient Optimization**](##**C.-Ingredient-Optimization**)
+
+---
+
+## **A. Pizza Metrics**
 
 **1 - How many pizzas were ordered?**
 
@@ -139,7 +149,7 @@ GROUP BY
 ORDER BY order_count DESC
 ```
 
-# **B. Runner and Customer Experience**
+## **B. Runner and Customer Experience**
 
 **1 - How many runners signed up for each 1 week period? (i.e. week starts `2021-01-01`)**
 
@@ -226,7 +236,7 @@ FROM runner_orders
 GROUP BY runner_id
 ```
 
-# **C. Ingredient Optimization**
+## **C. Ingredient Optimization**
 
 **1 - What are the standard ingredients for each pizza?**
 
@@ -406,7 +416,7 @@ FROM count_add_sub
 
 ```
 
-# **D. Pricing and Ratings**
+## **D. Pricing and Ratings**
 
 **1 - If a Meat Lovers pizza costs $12 and Vegetarian costs $10 and there were no charges for changes - how much money has Pizza Runner made so far if there are no delivery fees?**
 
