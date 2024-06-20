@@ -175,12 +175,65 @@ WHERE interest_id IN (SELECT interest_id FROM count_frequency);
 **4 - Does this decision make sense to remove these data points from a business perspective? Use an example where there are all 14 months present to a removed interest example for your arguments - think about what it means to have less months present from a segment perspective.**
 
 ```sql
+WITH count_frequency AS
+(SELECT
+ interest_id,
+    COUNT(month_year) AS month_frequency
+FROM interest_metrics
+GROUP BY interest_id
+HAVING month_frequency <= 6),
+not_interests AS (
+    SELECT 
+        COUNT(*) AS remove_interest, 
+        month_year 
+    FROM 
+        interest_metrics 
+    WHERE 
+        interest_id IN (SELECT interest_id FROM count_frequency) 
+    GROUP BY 
+        month_year
+),
+current_interests AS (
+    SELECT 
+        COUNT(*) AS current_interest, 
+        month_year 
+    FROM 
+        interest_metrics 
+    WHERE 
+        interest_id NOT IN (SELECT interest_id FROM count_frequency) 
+    GROUP BY 
+        month_year
+)
+SELECT 
+    remove_interest, 
+    current_interest, 
+    not_interests.month_year, 
+    100 * remove_interest / current_interest AS remove_pct 
+FROM 
+    not_interests 
+JOIN 
+    current_interests 
+ON 
+    not_interests.month_year = current_interests.month_year;
 
 ```
 
 **5 - If we include all of our interests regardless of their counts - how many unique interests are there for each month?**
 
 ```sql
+WITH count_frequency AS
+(SELECT
+ interest_id,
+    COUNT(month_year) AS month_frequency
+FROM interest_metrics
+GROUP BY interest_id
+HAVING month_frequency <= 6)
+SELECT
+ COUNT(DISTINCT interest_id) AS current_interest, 
+    month_year 
+FROM interest_metrics 
+WHERE month_year IS NOT NULL AND interest_id NOT IN (SELECT interest_id FROM count_frequency) 
+GROUP BY month_year
 
 ```
 
@@ -362,6 +415,27 @@ GROUP BY month_year;
 **4 - What is the 3 month rolling average of the max average composition value from September 2018 to August 2019 and include the previous top ranking interests in the same output shown below.**
 
 ```sql
+WITH get_max AS
+(SELECT 
+ month_year,
+ MAX(avg_composition) AS max_avg_composition
+FROM metric_with_avg_composition
+WHERE month_year IS NOT NULL
+GROUP BY month_year),
+get_3_month_rolling_avg AS
+(SELECT 
+ mwac.month_year,
+ interest_id,
+    avg_composition,
+    ROUND(AVG(avg_composition) OVER(ORDER BY month_year 
+         ROWS BETWEEN 2 PRECEDING AND CURRENT ROW),2) AS 3_month_rolling_avg
+FROM metric_with_avg_composition mwac
+JOIN get_max gm ON mwac.month_year = gm.month_year
+WHERE avg_composition = max_avg_composition)
+SELECT
+ *
+FROM get_3_month_rolling_avg
+WHERE month_year BETWEEN '2018-09-01' AND '2019-08-01'
 
 ```
 
