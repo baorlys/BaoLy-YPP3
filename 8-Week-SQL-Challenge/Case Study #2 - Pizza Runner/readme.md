@@ -1,12 +1,15 @@
 # Case Study #2 - Pizza Runner
+![img](https://8weeksqlchallenge.com/images/case-study-designs/2.png)
 
 **4 SECTIONS**
 
-[**A. Pizza Metrics**](##**A.-Pizza-Metrics**)
+[A. Pizza Metrics](#a-pizza-metrics)
 
-[**B. Runner and Customer Experience**](##**B.-Runnerand-Customer-Experience**)
+[B. Runner and Customer Experience](#b-runner-and-customer-experience)
 
-[**C. Ingredient Optimization**](##**C.-Ingredient-Optimization**)
+[C. Ingredient Optimization](#c-ingredient-optimization)
+
+[D. Pricing and Ratings](#d-pricing-and-ratings)
 
 ---
 

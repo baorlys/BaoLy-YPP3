@@ -1,6 +1,18 @@
 # Case Study #7 - Balanced Tree
 
-# **A. High Level Sales Analysis**
+![img](https://8weeksqlchallenge.com/images/case-study-designs/7.png)
+
+**3 SECTIONS**
+
+[A. High Level Sales Analysis](#a-high-level-sales-analysis)
+
+[B. Transaction Analysis](#b-transaction-analysis)
+
+[C. Product Analysis](#c-product-analysis)
+
+---
+
+## **A. High Level Sales Analysis**
 
 **1 - What was the total quantity sold for all products?**
 
@@ -36,7 +48,7 @@ GROUP BY product_name
 
 ```
 
-# **B. Transaction Analysis**
+## **B. Transaction Analysis**
 
 **1 - How many unique transactions were there?**
 
@@ -98,7 +110,7 @@ SELECT
 FROM sales
 ```
 
-# **C. Product Analysis**
+## **C. Product Analysis**
 
 **1 - What are the top 3 products by total revenue before discount?**
 

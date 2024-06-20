@@ -1,4 +1,5 @@
 # Case Study #3 - Foodie-Fi
+![img](https://8weeksqlchallenge.com/images/case-study-designs/3.png)
 
 **1 - How many customers has Foodie-Fi ever had?**
 

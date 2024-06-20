@@ -1,6 +1,21 @@
 # Case Study #8 - Fresh Segments
 
-# **A. Data Exploration and Cleansing**
+![img](https://8weeksqlchallenge.com/images/case-study-designs/8.png)
+
+**4 SECTIONS**
+
+[A. Data Exploration and Cleansing](#a-data-exploration-and-cleansing)
+
+[B. Interest Analysis](#b-interest-analysis)
+
+[C. Segment Analysis](#c-segment-analysis)
+
+[D. Index Analysis](#d-index-analysis)
+
+---
+
+
+## **A. Data Exploration and Cleansing**
 
 **1 - Update the `fresh_segments.interest_metrics` table by modifying the `month_year` column to be a `date` data type with the start of the month**
 
@@ -95,7 +110,7 @@ WHERE  month_year < created_at
 
 ```
 
-# **B. Interest Analysis**
+## **B. Interest Analysis**
 
 **1 - Which interests have been present in all `month_year` dates in our dataset?**
 
@@ -169,7 +184,7 @@ WHERE interest_id IN (SELECT interest_id FROM count_frequency);
 
 ```
 
-# **C. Segment Analysis**
+## **C. Segment Analysis**
 
 ```sql
 CREATE VIEW filtered_data AS
@@ -279,7 +294,7 @@ ORDER BY
 LIMIT 10
 ```
 
-# **D. Index Analysis**
+## **D. Index Analysis**
 
 ```sql
 CREATE VIEW metric_with_avg_composition AS

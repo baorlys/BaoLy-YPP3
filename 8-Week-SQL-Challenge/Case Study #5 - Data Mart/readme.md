@@ -1,6 +1,20 @@
 # Case Study #5 - Data Mart
 
-# **A. Data Cleansing Steps**
+![img](https://8weeksqlchallenge.com/images/case-study-designs/5.png)
+
+**4 SECTIONS**
+
+[A. Data Cleansing Steps](#a-data-cleansing-steps)
+
+[B. Data Exploration](#b-data-exploration)
+
+[C. Before & After Analysis](#c-before--after-analysis)
+
+[D. Bonus Question](#d-bonus-question)
+
+---
+
+## **A. Data Cleansing Steps**
 
 ```sql
 CREATE VIEW clean_weekly_sales AS
@@ -28,7 +42,7 @@ FROM weekly_sales)
 
 ```
 
-# **B. Data Exploration**
+## **B. Data Exploration**
 
 **1 - What day of the week is used for each week_date value?**
 
@@ -170,7 +184,7 @@ GROUP BY calendar_year, platform
 ORDER BY calendar_year
 ```
 
-# **C. Before & After Analysis**
+## **C. Before & After Analysis**
 
 **1 - What is the total sales for the 4 weeks before and after `2020-06-15`? What is the growth or reduction rate in actual values and percentage of sales?**
 
@@ -249,7 +263,7 @@ GROUP BY calendar_year
 ORDER BY calendar_year
 ```
 
-# D. Bonus question
+## **D. Bonus Question**
 
 - Which areas of the business have the highest negative impact in sales metrics performance in 2020 for the 12 week before and after period?
 

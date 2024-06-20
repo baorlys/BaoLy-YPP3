@@ -1,5 +1,7 @@
 # 8 week SQL challenge
 
+[8 Week SQL Challenge Questions](https://8weeksqlchallenge.com/)
+
 ## 📚 Table of Contents
 
 [**Case Study #1 - Danny's Diner**](Case%20Study%20%231%20-%20Danny's%20Diner)

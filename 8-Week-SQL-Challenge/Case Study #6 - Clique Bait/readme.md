@@ -1,6 +1,19 @@
 # Case Study #6 - Clique Bait
 
-# **A. Digital Analysis**
+![img](https://8weeksqlchallenge.com/images/case-study-designs/6.png)
+
+**3 SECTIONS**
+
+[A. Digital Analysis](#a-digital-analysis)
+
+[B. Product Funnel Analysis](#b-product-funnel-analysis)
+
+[C. Campaigns Analysis](#c-campaigns-analysis)
+
+
+---
+
+## **A. Digital Analysis**
 
 **1 - How many users are there?**
 
@@ -121,7 +134,7 @@ ORDER BY purchase_count DESC
 LIMIT 3
 ```
 
-# **B. Product Funnel Analysis**
+## **B. Product Funnel Analysis**
 
 Using a single SQL query - create a new output table which has the following details:
 
@@ -234,7 +247,7 @@ FROM product_analysis
 ORDER BY percentage
 ```
 
-# **C. Campaigns Analysis**
+## **C. Campaigns Analysis**
 
 Generate a table that has 1 single row for every unique visit_id record and has the following columns:
 

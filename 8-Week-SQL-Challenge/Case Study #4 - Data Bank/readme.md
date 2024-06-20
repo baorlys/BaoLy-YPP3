@@ -1,6 +1,18 @@
 # Case Study #4 - Data Bank
 
-# **A. Customer Nodes Exploration**
+![img](https://8weeksqlchallenge.com/images/case-study-designs/4.png)
+
+**2 SECTIONS**
+
+[A. Customer Nodes Exploration](#a-customer-nodes-exploration)
+
+[B. Customer Transactions](#b-customer-transactions)
+
+
+---
+
+
+## **A. Customer Nodes Exploration**
 
 **1 - How many unique nodes are there on the Data Bank system?**
 
@@ -84,7 +96,7 @@ WHERE quartile = 19;
 
 ```
 
-# **B. Customer Transactions**
+## **B. Customer Transactions**
 
 **1 - What is the unique count and total amount for each transaction type?**
 
