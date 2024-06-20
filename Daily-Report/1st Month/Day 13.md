@@ -2,19 +2,18 @@
 
 Created time: June 5, 2024 9:09 AM
 
-# Bao Ly - 05/06
 
-What did I do yesterday ?
+**What did I do yesterday ?**
 
 - Completed UI design of sub features Communication Subsystem.
 - In progress Database design for Communication Subsystem.
 
-What will I do today ?
+**What will I do today ?**
 
 - Fix UI design of sub features Communication Subsystem.
 - In progress Database design for Communication Subsystem.
 - Report output and fix (if needed).
 
-What ( if anything) is blocking my progress ?
+**What ( if anything) is blocking my progress ?**
 
 - None

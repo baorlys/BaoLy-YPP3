@@ -2,7 +2,6 @@
 
 Created time: June 12, 2024 9:22 AM
 
-# Bao Ly - 12/06
 
 **What did I do yesterday?**
 

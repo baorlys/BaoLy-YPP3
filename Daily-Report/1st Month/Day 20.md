@@ -2,8 +2,6 @@
 
 Created time: June 17, 2024 9:17 AM
 
-# Bao Ly - 17/06
-
 **What did I do yesterday?**
 
 - Complete Case Study #3, #4, #5 SQL Challenge.

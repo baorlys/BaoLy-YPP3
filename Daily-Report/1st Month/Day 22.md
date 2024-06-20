@@ -2,7 +2,6 @@
 
 Created time: June 19, 2024 9:18 AM
 
-# Bao Ly - 19/06
 
 **What did I do yesterday?**
 
@@ -16,6 +15,8 @@ Created time: June 19, 2024 9:18 AM
 
 - None.
 
+
+*report end-day:*
 What did I do yesterday ?
 
 - Bài tập: Hoàn thành 16/20 câu hỏi Challenge 8.
@@ -30,5 +31,3 @@ Block:
 
 - Bài tập: Chưa hiểu 4 câu hỏi trong Challenge 8
 - Presentation: None
-
-[https://github.com/baorlys/MentorHub-Project/Database design/8WeekSQLChallenge](https://github.com/baorlys/MentorHub-Project/tree/master/Database%20design/8WeekSQLChallenge)
