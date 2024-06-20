@@ -6,7 +6,7 @@
 
 ```sql
 SELECT
-	COUNT(DISTINCT user_id) AS user_count
+ COUNT(DISTINCT user_id) AS user_count
 FROM users
 ```
 
@@ -14,7 +14,7 @@ FROM users
 
 ```sql
 SELECT
-	ROUND(AVG(cookie_count)) AS avg_cookie
+ ROUND(AVG(cookie_count)) AS avg_cookie
 FROM
     (SELECT
         user_id,
@@ -27,7 +27,7 @@ FROM
 
 ```sql
 SELECT
-	MONTH(event_time) AS calendar_month,
+ MONTH(event_time) AS calendar_month,
     COUNT(DISTINCT visit_id) AS visit_count
 FROM events
 GROUP BY calendar_month
@@ -37,7 +37,7 @@ GROUP BY calendar_month
 
 ```sql
 SELECT
-	event_type,
+ event_type,
     COUNT(*) AS event_count
 FROM events
 GROUP BY event_type
@@ -47,7 +47,7 @@ GROUP BY event_type
 
 ```sql
 SELECT
-	COUNT(DISTINCT visit_id) / (SELECT COUNT(DISTINCT visit_id) FROM events) * 100 AS percentage
+ COUNT(DISTINCT visit_id) / (SELECT COUNT(DISTINCT visit_id) FROM events) * 100 AS percentage
 FROM events AS e
 JOIN event_identifier AS ei ON e.event_type = ei.event_type
 WHERE event_name = 'Purchase'
@@ -74,8 +74,8 @@ FROM
 
 ```sql
 SELECT
-	page_name,
-	COUNT(*) AS view_count
+ page_name,
+ COUNT(*) AS view_count
 FROM events AS e
 JOIN event_identifier AS ei ON ei.event_type = e.event_type
 JOIN page_hierarchy AS ph ON ph.page_id = e.page_id
@@ -89,8 +89,8 @@ LIMIT 3
 
 ```sql
 SELECT
-	product_category,
-	SUM(IF(event_name = 'Page View',1,0)) AS view_count,
+ product_category,
+ SUM(IF(event_name = 'Page View',1,0)) AS view_count,
     SUM(IF(event_name = 'Add to Cart',1,0)) AS cart_add
 FROM events AS e
 JOIN event_identifier AS ei ON ei.event_type = e.event_type
@@ -105,11 +105,11 @@ ORDER BY view_count DESC
 ```sql
 WITH check_purchase AS
 (SELECT
-	DISTINCT visit_id
+ DISTINCT visit_id
 FROM events
 WHERE event_type=3)
 SELECT
-	page_name,
+ page_name,
     SUM(IF(event_name = 'Add to Cart',1,0)) AS purchase_count
 FROM events AS e
 LEFT JOIN check_purchase AS cp ON cp.visit_id = e.visit_id
@@ -136,12 +136,12 @@ Using a single SQL query - create a new output table which has the following det
 CREATE VIEW product_analysis AS
 WITH check_purchase AS
 (SELECT
-	visit_id,
-	1 AS is_purchase
+ visit_id,
+ 1 AS is_purchase
 FROM events
 WHERE event_type=3)
 SELECT
-	product_id,
+ product_id,
     product_category,
     page_name,
     SUM(IF(event_name = 'Page View',1,0)) AS views,
@@ -161,8 +161,8 @@ Additionally, create another table which further aggregates the data for the abo
 ```sql
 WITH check_purchase AS
 (SELECT
-	visit_id,
-	1 AS is_purchase
+ visit_id,
+ 1 AS is_purchase
 FROM events
 WHERE event_type=3)
 SELECT
@@ -183,7 +183,7 @@ GROUP BY product_category
 
 ```sql
 SELECT
-	*
+ *
 FROM product_analysis
 ORDER BY 
     views DESC,
@@ -196,7 +196,7 @@ ORDER BY
 
 ```sql
 SELECT
-	*
+ *
 FROM product_analysis
 ORDER BY abandoned DESC
 LIMIT 1
@@ -207,10 +207,10 @@ LIMIT 1
 
 ```sql
 SELECT
-	product_id,
+ product_id,
     product_category,
     page_name,
-	ROUND(purchased/views * 100,2) AS percentage
+ ROUND(purchased/views * 100,2) AS percentage
 FROM product_analysis
 ORDER BY percentage DESC
 LIMIT 1
@@ -220,7 +220,7 @@ LIMIT 1
 
 ```sql
 SELECT
-	ROUND(AVG(cart_adds/views * 100),2)AS percentage
+ ROUND(AVG(cart_adds/views * 100),2)AS percentage
 FROM product_analysis
 ORDER BY percentage
 ```
@@ -229,7 +229,7 @@ ORDER BY percentage
 
 ```sql
 SELECT
-	ROUND(AVG(purchased/cart_adds * 100),2)AS percentage
+ ROUND(AVG(purchased/cart_adds * 100),2)AS percentage
 FROM product_analysis
 ORDER BY percentage
 ```
@@ -252,7 +252,7 @@ Generate a table that has 1 single row for every unique visit_id record and has 
 ```sql
 WITH subtable AS
 (SELECT
-	*,
+ *,
     FIRST_VALUE(event_time) OVER (PARTITION BY visit_id) AS visit_start_time,
     LAST_VALUE(event_type) OVER (PARTITION BY visit_id) AS last_event
 FROM events)
@@ -266,13 +266,13 @@ SELECT
     campaign_name,
     SUM(IF(event_type = 4,1,0)) AS impression,
     SUM(IF(event_type = 5,1,0)) AS click,
-	GROUP_CONCAT(IF(event_type = 2 AND product_id IS NOT NULL,page_name,NULL)) AS cart_products
+ GROUP_CONCAT(IF(event_type = 2 AND product_id IS NOT NULL,page_name,NULL)) AS cart_products
 FROM subtable AS s
 JOIN users AS u ON u.cookie_id = s.cookie_id
 JOIN page_hierarchy AS ph ON ph.page_id = s.page_id
 LEFT JOIN campaign_identifier AS ci ON s.event_time BETWEEN ci.start_date AND ci.end_date
 GROUP BY
-	visit_id,
+ visit_id,
     user_id,
     visit_start_time,
     purchase,

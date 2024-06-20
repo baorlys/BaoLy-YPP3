@@ -22,8 +22,8 @@ MODIFY month_year DATE
 
 ```sql
 SELECT
-	month_year,
-	COUNT(*)
+ month_year,
+ COUNT(*)
 FROM interest_metrics
 GROUP BY month_year
 ORDER BY month_year IS NOT NULL, month_year ASC
@@ -40,15 +40,15 @@ WHERE interest_id IS NULL
 
 ```sql
 SELECT
-	COUNT(DISTINCT interest_id) AS metric_count,
-	COUNT(DISTINCT id) AS map_count,
+ COUNT(DISTINCT interest_id) AS metric_count,
+ COUNT(DISTINCT id) AS map_count,
     COUNT(DISTINCT id) - COUNT(DISTINCT interest_id) AS not_in_metric
 FROM interest_metrics AS metric
 RIGHT JOIN interest_map AS map ON metric.interest_id = map.id
 UNION
 SELECT
-	COUNT(DISTINCT interest_id) AS metric_count,
-	COUNT(DISTINCT id) AS map_count,
+ COUNT(DISTINCT interest_id) AS metric_count,
+ COUNT(DISTINCT id) AS map_count,
     COUNT(DISTINCT interest_id) - COUNT(DISTINCT id) AS not_in_metric
 FROM interest_metrics AS metric
 LEFT JOIN interest_map AS map ON metric.interest_id = map.id
@@ -58,7 +58,7 @@ LEFT JOIN interest_map AS map ON metric.interest_id = map.id
 
 ```sql
 SELECT
-	COUNT(DISTINCT id) AS map_count
+ COUNT(DISTINCT id) AS map_count
 FROM interest_map
 ```
 
@@ -66,7 +66,7 @@ FROM interest_map
 
 ```sql
 SELECT
-	_month,
+ _month,
     _year,
     month_year,
     interest_id,
@@ -87,7 +87,7 @@ WHERE interest_id = 21246 AND month_year IS NOT NULL
 
 ```sql
 SELECT
-	COUNT(*)
+ COUNT(*)
 FROM interest_metrics AS metric
 JOIN interest_map AS map ON metric.interest_id = map.id
 WHERE  month_year < created_at
@@ -101,11 +101,11 @@ WHERE  month_year < created_at
 
 ```sql
 SELECT
-	COUNT(DISTINCT month_year) AS unique_month_count
+ COUNT(DISTINCT month_year) AS unique_month_count
 FROM interest_metrics;
 -- 14 unique months
 SELECT
-	interest_id,
+ interest_id,
     COUNT(*) AS frequency
 FROM interest_metrics
 GROUP BY interest_id
@@ -117,25 +117,25 @@ HAVING frequency = 14
 ```sql
 WITH count_frequency AS
 (SELECT
-	interest_id,
+ interest_id,
     COUNT(month_year) AS month_frequency
 FROM interest_metrics
 GROUP BY interest_id),
 count_interest AS
 (SELECT
-	month_frequency,
+ month_frequency,
     COUNT(*) AS interest_count
 FROM count_frequency
 GROUP BY month_frequency
 ORDER BY month_frequency),
 cal_cumulative AS
 (SELECT
-	*,
+ *,
     ROUND(SUM(interest_count) OVER(ORDER BY month_frequency DESC) / SUM(interest_count) OVER() * 100 , 2) AS cumulative
 FROM count_interest
 GROUP BY month_frequency,interest_count)
 SELECT
-	*
+ *
 FROM cal_cumulative
 WHERE cumulative > 90
 
@@ -146,13 +146,13 @@ WHERE cumulative > 90
 ```sql
 WITH count_frequency AS
 (SELECT
-	interest_id,
+ interest_id,
     COUNT(month_year) AS month_frequency
 FROM interest_metrics
 GROUP BY interest_id
 HAVING month_frequency <= 6 )
 SELECT
-	COUNT(*) AS record_count
+ COUNT(*) AS record_count
 FROM interest_metrics
 WHERE interest_id IN (SELECT interest_id FROM count_frequency);
 ```
@@ -175,13 +175,13 @@ WHERE interest_id IN (SELECT interest_id FROM count_frequency);
 CREATE VIEW filtered_data AS
 WITH count_frequency AS
 (SELECT
-	interest_id,
+ interest_id,
     COUNT(month_year) AS month_frequency
 FROM interest_metrics
 GROUP BY interest_id
 HAVING month_frequency >= 6 )
 SELECT
-	*
+ *
 FROM interest_metrics
 WHERE interest_id IN (SELECT interest_id FROM count_frequency)
 ```
@@ -227,7 +227,7 @@ LIMIT 5
 ```sql
 SELECT
     interest_id,
-	STDDEV(percentile_ranking) AS standard_deviation
+ STDDEV(percentile_ranking) AS standard_deviation
 FROM
     filtered_data
 GROUP BY interest_id
@@ -241,14 +241,14 @@ LIMIT 5
 WITH top_5_stddev AS
 (SELECT
     interest_id,
-	STDDEV(percentile_ranking) AS standard_deviation
+ STDDEV(percentile_ranking) AS standard_deviation
 FROM
     filtered_data
 GROUP BY interest_id
 ORDER BY standard_deviation DESC
 LIMIT 5)
 SELECT
-	interest_id,
+ interest_id,
     MIN(percentile_ranking) AS minimum_pr,
     MAX(percentile_ranking) AS maximum_pr
 FROM filtered_data
@@ -261,18 +261,18 @@ GROUP BY interest_id
 
 ```sql
 SELECT
-	interest_id,
+ interest_id,
     interest_name,
     interest_summary,
     AVG(composition) AS avg_composition,
     AVG(ranking) AS avg_ranking
 FROM
-	filtered_data AS filtered_metric
+ filtered_data AS filtered_metric
 JOIN interest_map AS map ON filtered_metric.interest_id = map.id
 GROUP BY 
     interest_id,
-	interest_name,
-	interest_summary
+ interest_name,
+ interest_summary
 ORDER BY 
     avg_composition DESC, 
     avg_ranking ASC
@@ -284,7 +284,7 @@ LIMIT 10
 ```sql
 CREATE VIEW metric_with_avg_composition AS
 SELECT
-	*,
+ *,
     ROUND(composition/index_value,2) AS avg_composition
 FROM interest_metrics
 ```
@@ -295,7 +295,7 @@ The `index_value` is a measure which can be used to reverse calculate the aver
 
 ```sql
 SELECT
-	month_year,
+ month_year,
     interest_id,
     avg_composition,
     RANK() OVER(PARTITION BY month_year ORDER BY avg_composition DESC) AS ranking
@@ -309,14 +309,14 @@ ORDER BY month_year
 ```sql
 WITH cte AS
 (SELECT
-	month_year,
+ month_year,
     interest_id,
     RANK() OVER(PARTITION BY month_year ORDER BY avg_composition DESC) AS ranking
 FROM metric_with_avg_composition
 WHERE ranking <= 10
 ORDER BY month_year)
 SELECT
-	interest_id,
+ interest_id,
     COUNT(*) AS frequency
 FROM cte
 GROUP BY interest_id
@@ -329,7 +329,7 @@ LIMIT 10
 ```sql
 WITH cte AS
 (SELECT
-	month_year,
+ month_year,
     interest_id,
     avg_composition,
     RANK() OVER(PARTITION BY month_year ORDER BY avg_composition DESC) AS ranking
@@ -337,7 +337,7 @@ FROM metric_with_avg_composition
 WHERE ranking <= 10
 ORDER BY month_year)
 SELECT
-	month_year,
+ month_year,
     ROUND(AVG(avg_composition),2) AS avg_composition_each_month
 FROM cte
 GROUP BY month_year;

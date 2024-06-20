@@ -4,7 +4,7 @@
 
 ```sql
 SELECT
-	COUNT(DISTINCT customer_id) AS customer_count
+ COUNT(DISTINCT customer_id) AS customer_count
 FROM subscriptions
 
 ```
@@ -13,8 +13,8 @@ FROM subscriptions
 
 ```sql
 SELECT
-	MONTH(start_date) AS month_of_year,
-    COUNT(*) AS trial_plan_count
+ MONTH(start_date) AS month_of_year,
+ COUNT(*) AS trial_plan_count
 FROM subscriptions AS s
 JOIN plans AS p ON s.plan_id = p.plan_id
 WHERE plan_name = 'trial'
@@ -26,9 +26,9 @@ ORDER BY month_of_year
 
 ```sql
 SELECT
-	s.plan_id,
-	plan_name,
-    COUNT(*) AS plan_count
+ s.plan_id,
+ plan_name,
+ COUNT(*) AS plan_count
 FROM subscriptions AS s
 JOIN plans AS p ON s.plan_id = p.plan_id
 WHERE YEAR(start_date) > 2020
@@ -41,9 +41,9 @@ ORDER BY s.plan_id
 
 ```sql
 SELECT
-    SUM(IF(plan_name = 'churn',1,0)) AS churn_count,
-    ROUND(SUM(IF(plan_name = 'churn',1,0)) / 
-			COUNT(DISTINCT customer_id) *100,1)  AS churn_count
+ SUM(IF(plan_name = 'churn',1,0)) AS churn_count,
+ ROUND(SUM(IF(plan_name = 'churn',1,0)) / 
+ COUNT(DISTINCT customer_id) *100,1)  AS churn_count
 FROM subscriptions AS s
 JOIN plans AS p ON s.plan_id = p.plan_id
 
@@ -53,36 +53,36 @@ JOIN plans AS p ON s.plan_id = p.plan_id
 
 ```sql
 WITH cte_rank AS (
-	SELECT
-		*,
-        ROW_NUMBER() OVER (PARTITION BY customer_id) AS ranking
-	FROM subscriptions
+ SELECT
+  *,
+  ROW_NUMBER() OVER (PARTITION BY customer_id) AS ranking
+ FROM subscriptions
 )
 
 SELECT
-	COUNT(*) AS customer_count,
+ COUNT(*) AS customer_count,
     ROUND(COUNT(*)/(SELECT COUNT(DISTINCT customer_id) FROM subscriptions)*100) AS percentage
 FROM cte_rank
 WHERE customer_id IN
-		(SELECT
-			customer_id
-		FROM cte_rank
-		WHERE (ranking = 1 AND plan_id = 0))
-	AND ranking = 2 AND plan_id = 4
+  (SELECT
+   customer_id
+  FROM cte_rank
+  WHERE (ranking = 1 AND plan_id = 0))
+  AND ranking = 2 AND plan_id = 4
 ```
 
 **6 - What is the number and percentage of customer plans after their initial free trial?**
 
 ```sql
 SELECT
-	plan_id,
+ plan_id,
     COUNT(customer_id) AS customer_count,
-	ROUND(COUNT(customer_id)/(SELECT COUNT(DISTINCT customer_id) FROM subscriptions)*100,1) AS percentage
+ ROUND(COUNT(customer_id)/(SELECT COUNT(DISTINCT customer_id) FROM subscriptions)*100,1) AS percentage
 FROM
-	(	SELECT
-			*,
-			LAG(plan_id) OVER (PARTITION BY customer_id) AS previous_plan
-		FROM subscriptions) AS subquery
+ ( SELECT
+   *,
+   LAG(plan_id) OVER (PARTITION BY customer_id) AS previous_plan
+  FROM subscriptions) AS subquery
 WHERE previous_plan = 0
 GROUP BY plan_id
 ORDER BY plan_id
@@ -92,14 +92,14 @@ ORDER BY plan_id
 
 ```sql
 SELECT
-	plan_id,
+ plan_id,
     COUNT(customer_id) AS customer_count,
     ROUND(COUNT(customer_id)/(SELECT COUNT(DISTINCT customer_id) FROM subscriptions)*100,1) AS percentage
 FROM (
-	SELECT
-		*,
-		LAST_VALUE(plan_id) OVER(PARTITION BY customer_id) AS last_plan_id
-	FROM subscriptions
+ SELECT
+  *,
+  LAST_VALUE(plan_id) OVER(PARTITION BY customer_id) AS last_plan_id
+ FROM subscriptions
     WHERE start_date <= '2020-12-31') AS subquery
 WHERE plan_id = last_plan_id
 GROUP BY plan_id
@@ -111,7 +111,7 @@ ORDER BY plan_id
 
 ```sql
 SELECT
-	COUNT(DISTINCT customer_id) AS customer_count
+ COUNT(DISTINCT customer_id) AS customer_count
 FROM subscriptions
 WHERE YEAR(start_date) = 2020 AND plan_id = 3
 ```
@@ -120,13 +120,13 @@ WHERE YEAR(start_date) = 2020 AND plan_id = 3
 
 ```sql
 SELECT
-	ROUND(AVG(TIMESTAMPDIFF(DAY, start_date, annual_date)),0) AS avg_date_join
+ ROUND(AVG(TIMESTAMPDIFF(DAY, start_date, annual_date)),0) AS avg_date_join
 FROM subscriptions AS s1
 JOIN (
-	SELECT
-		customer_id,
-		start_date AS annual_date
-	FROM subscriptions
+ SELECT
+  customer_id,
+  start_date AS annual_date
+ FROM subscriptions
     WHERE plan_id = 3) AS s2 ON s1.customer_id = s2.customer_id
 WHERE plan_id = 0
 ```
@@ -135,15 +135,15 @@ WHERE plan_id = 0
 
 ```sql
 SELECT
-	CONCAT(TIMESTAMPDIFF(MONTH, start_date, annual_date) *30,' - ',(TIMESTAMPDIFF(MONTH, start_date, annual_date) + 1)*30,' days') AS period,
+ CONCAT(TIMESTAMPDIFF(MONTH, start_date, annual_date) *30,' - ',(TIMESTAMPDIFF(MONTH, start_date, annual_date) + 1)*30,' days') AS period,
     TIMESTAMPDIFF(MONTH, start_date, annual_date) AS period_month,
     COUNT(*) AS customer_count
 FROM subscriptions AS s1
 JOIN (
-	SELECT
-		customer_id,
-		start_date AS annual_date
-	FROM subscriptions
+ SELECT
+  customer_id,
+  start_date AS annual_date
+ FROM subscriptions
     WHERE plan_id = 3) AS s2 ON s1.customer_id = s2.customer_id
 WHERE plan_id = 0
 GROUP BY period,period_month
@@ -157,10 +157,10 @@ ORDER BY period_month
 SELECT
     COUNT(DISTINCT customer_id) AS customer_count
 FROM
-	(	SELECT
-			*,
-			LAG(plan_id) OVER (PARTITION BY customer_id) AS previous_plan
-		FROM subscriptions) AS sub
+ ( SELECT
+   *,
+   LAG(plan_id) OVER (PARTITION BY customer_id) AS previous_plan
+  FROM subscriptions) AS sub
 WHERE plan_id = 2 AND previous_plan = 3
 
 ```

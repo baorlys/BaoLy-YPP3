@@ -6,8 +6,8 @@
 
 ```sql
 SELECT
-	product_name,
-	SUM(qty) AS total_quantity
+ product_name,
+ SUM(qty) AS total_quantity
 FROM sales AS s
 JOIN product_details AS pd ON pd.product_id = s.prod_id
 GROUP BY product_name
@@ -17,7 +17,7 @@ GROUP BY product_name
 
 ```sql
 SELECT
-	product_name,
+ product_name,
     SUM(qty * s.price) AS total_revenue
 FROM sales AS s
 JOIN product_details AS pd ON pd.product_id = s.prod_id
@@ -28,8 +28,8 @@ GROUP BY product_name
 
 ```sql
 SELECT
-	product_name,
-	SUM(s.price * qty * discount/100) AS total_discount
+ product_name,
+ SUM(s.price * qty * discount/100) AS total_discount
 FROM sales AS s
 JOIN product_details AS pd ON pd.product_id = s.prod_id
 GROUP BY product_name
@@ -42,7 +42,7 @@ GROUP BY product_name
 
 ```sql
 SELECT
-	COUNT(DISTINCT txn_id) AS trans_count
+ COUNT(DISTINCT txn_id) AS trans_count
 FROM sales
 
 ```
@@ -51,7 +51,7 @@ FROM sales
 
 ```sql
 SELECT
-	ROUND(SUM(qty) / (SELECT COUNT(DISTINCT txn_id) FROM sales)) AS avg_qty
+ ROUND(SUM(qty) / (SELECT COUNT(DISTINCT txn_id) FROM sales)) AS avg_qty
 FROM sales AS s
 ```
 
@@ -76,7 +76,7 @@ FROM revenue_quartiles;
 
 ```sql
 SELECT
-	ROUND(SUM(price * qty * discount/100)/(SELECT COUNT(DISTINCT txn_id) FROM sales),2) AS avg_discount
+ ROUND(SUM(price * qty * discount/100)/(SELECT COUNT(DISTINCT txn_id) FROM sales),2) AS avg_discount
 FROM sales
 ```
 
@@ -84,8 +84,8 @@ FROM sales
 
 ```sql
 SELECT
-	ROUND(SUM(IF(member,1,0)) / (SELECT COUNT(txn_id) FROM sales)*100) AS member_percentage,
-	100 - ROUND(SUM(IF(member,1,0)) / (SELECT COUNT(txn_id) FROM sales)*100) AS non_member_percentage
+ ROUND(SUM(IF(member,1,0)) / (SELECT COUNT(txn_id) FROM sales)*100) AS member_percentage,
+ 100 - ROUND(SUM(IF(member,1,0)) / (SELECT COUNT(txn_id) FROM sales)*100) AS non_member_percentage
 FROM sales
 ```
 
@@ -93,7 +93,7 @@ FROM sales
 
 ```sql
 SELECT
-	ROUND(SUM(IF(member,qty*price,0))/(SELECT COUNT(DISTINCT txn_id) FROM sales WHERE member),2) AS member_avg_revenue,
+ ROUND(SUM(IF(member,qty*price,0))/(SELECT COUNT(DISTINCT txn_id) FROM sales WHERE member),2) AS member_avg_revenue,
     ROUND(SUM(IF(!member,qty*price,0))/(SELECT COUNT(DISTINCT txn_id) FROM sales WHERE !member),2) AS non_member_avg_revenue
 FROM sales
 ```
@@ -104,7 +104,7 @@ FROM sales
 
 ```sql
 SELECT
-	product_name,
+ product_name,
     SUM(qty * s.price) AS total_revenue
 FROM sales AS s
 JOIN product_details AS pd ON pd.product_id = s.prod_id
@@ -117,8 +117,8 @@ LIMIT 3
 
 ```sql
 SELECT
-	segment_name,
-	SUM(qty) AS total_quantity,
+ segment_name,
+ SUM(qty) AS total_quantity,
     SUM(qty * s.price) AS total_revenue,
     SUM(qty * s.price * discount/100) AS total_discount
 FROM sales AS s
@@ -131,7 +131,7 @@ GROUP BY segment_name;
 
 ```sql
 SELECT
-	segment_name,
+ segment_name,
     product_name,
     total_quantity
 FROM
@@ -151,10 +151,10 @@ WHERE ranking = 1
 
 ```sql
 SELECT
-	category_name,
-	SUM(qty) AS total_quantity,
-	SUM(qty * s.price) AS total_revenue,
-	SUM(qty * s.price * discount/100) AS total_discount
+ category_name,
+ SUM(qty) AS total_quantity,
+ SUM(qty * s.price) AS total_revenue,
+ SUM(qty * s.price * discount/100) AS total_discount
 FROM sales AS s
 JOIN product_details AS pd ON pd.product_id = s.prod_id
 GROUP BY category_name;
@@ -165,7 +165,7 @@ GROUP BY category_name;
 
 ```sql
 SELECT
-	category_name,
+ category_name,
     product_name,
     total_quantity
 FROM
@@ -186,13 +186,13 @@ WHERE ranking = 1
 ```sql
 WITH total_revenue_segment AS
 (SELECT
-	segment_name,
-	SUM(qty * s.price) AS total_revenue
+ segment_name,
+ SUM(qty * s.price) AS total_revenue
 FROM sales AS s
 JOIN product_details AS pd ON pd.product_id = s.prod_id
 GROUP BY segment_name)
 SELECT
-	pd.segment_name,
+ pd.segment_name,
     product_name,
     SUM(qty*s.price) / total_revenue * 100 as revenue_percentage
 FROM sales AS s
@@ -208,13 +208,13 @@ ORDER BY pd.segment_name
 ```sql
 WITH total_revenue_category AS
 (SELECT
-	category_name,
-	SUM(qty * s.price) AS total_revenue
+ category_name,
+ SUM(qty * s.price) AS total_revenue
 FROM sales AS s
 JOIN product_details AS pd ON pd.product_id = s.prod_id
 GROUP BY category_name)
 SELECT
-	pd.category_name,
+ pd.category_name,
     product_name,
     SUM(qty*s.price) / total_revenue * 100 as revenue_percentage
 FROM sales AS s
@@ -230,8 +230,8 @@ ORDER BY pd.category_name
 ```sql
 
 SELECT
-	category_name,
-	SUM(qty * s.price)/
+ category_name,
+ SUM(qty * s.price)/
         (SELECT SUM(qty*price) OVER() FROM sales LIMIT 1)*100 AS total_revenue
 FROM sales AS s
 JOIN product_details AS pd ON pd.product_id = s.prod_id
@@ -243,14 +243,14 @@ GROUP BY category_name
 ```sql
 WITH count_prod_trans AS
 (SELECT
-	product_name,
+ product_name,
     txn_id,
     ROW_NUMBER() OVER(PARTITION BY product_name) AS ranking
 FROM sales AS s
 JOIN product_details AS pd ON pd.product_id = s.prod_id
 GROUP BY product_name,txn_id)
 SELECT
-	DISTINCT product_name,
+ DISTINCT product_name,
     LAST_VALUE(ranking) OVER(PARTITION BY product_name) / (SELECT COUNT(DISTINCT txn_id) FROM sales) AS penetration
 FROM count_prod_trans
 ```
@@ -260,7 +260,7 @@ FROM count_prod_trans
 ```sql
 
 SELECT
-	s1.prod_id AS prod_1,
+ s1.prod_id AS prod_1,
     s2.prod_id AS prod_2,
     s3.prod_id AS prod_3,
     COUNT(*) AS count
