@@ -1,7 +1,10 @@
 # Dashboard
 
 ![img](../../Entity/Dashboard%20-%20Entity.png)
+![img](../../Details/Dashboard.png)
 ![img](../../../UX-UI%20design/Version3/Dashboard/Dashboard.png)
+
+**[DBML FILE](dbml.md)**
 
 ## Create table and insert data
 
