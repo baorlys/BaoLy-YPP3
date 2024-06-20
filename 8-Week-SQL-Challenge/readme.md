@@ -1,6 +1,8 @@
 # 8 week SQL challenge
 
-[8 Week SQL Challenge Questions](https://8weeksqlchallenge.com/)
+<a href="https://8weeksqlchallenge.com/" target="_blank">8 Week SQL Challenge Questions</a>
+
+<!-- [8 Week SQL Challenge Questions](https://8weeksqlchallenge.com/) -->
 
 ## 📚 Table of Contents
 
