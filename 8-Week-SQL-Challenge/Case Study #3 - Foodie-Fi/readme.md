@@ -267,6 +267,7 @@ ORDER BY customer_id,gm.plan_id;
 **1 - How would you calculate the rate of growth for Foodie-Fi?**
 
 ```sql
+-- growth rate customer each month in 2020
 WITH count_customer_each_month AS (
  SELECT
   MONTH(start_date) AS month_calendar,
@@ -280,6 +281,21 @@ SELECT
   WHEN LAG(customer_count) OVER() IS NOT NULL THEN ROUND((customer_count-LAG(customer_count) OVER())/LAG(customer_count) OVER() * 100,2) 
   ELSE 0 END AS growth_rate
 FROM count_customer_each_month
+
+-- grow rate revenue each month in 2020
+WITH revenue_each_month AS (
+ SELECT
+  MONTH(payment_date) AS month_calendar,
+  SUM(amount) AS amount
+ FROM payments
+ GROUP BY month_calendar
+ ORDER BY month_calendar)
+SELECT 
+ *,
+    CASE 
+  WHEN LAG(amount) OVER() IS NOT NULL THEN ROUND((amount-LAG(amount) OVER())/LAG(amount) OVER() * 100,2) 
+  ELSE 0 END AS growth_rate
+FROM revenue_each_month
 ```
 
 ---
