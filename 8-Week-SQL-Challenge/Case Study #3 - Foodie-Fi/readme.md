@@ -20,6 +20,12 @@ Based off the 8 sample customers provided in the sample from the subscriptions t
 Try to keep it as short as possible - you may also want to run some sort of join to make your explanations a bit easier!
 
 ```sql
+SELECT 
+ customer_id,
+    plan_name,
+    start_date
+FROM subscriptions s
+JOIN plans p ON p.plan_id = s.plan_id
 ```
 
 ## **B. Data Analysis Questions**
@@ -258,7 +264,22 @@ ORDER BY customer_id,gm.plan_id;
 
 ## **D. Outside The Box Questions**
 
+**1 - How would you calculate the rate of growth for Foodie-Fi?**
+
 ```sql
+WITH count_customer_each_month AS (
+ SELECT
+  MONTH(start_date) AS month_calendar,
+  COUNT(DISTINCT customer_id) AS customer_count
+ FROM subscriptions
+ WHERE YEAR(start_date) = 2020
+ GROUP BY month_calendar )
+SELECT 
+ *,
+    CASE 
+  WHEN LAG(customer_count) OVER() IS NOT NULL THEN ROUND((customer_count-LAG(customer_count) OVER())/LAG(customer_count) OVER() * 100,2) 
+  ELSE 0 END AS growth_rate
+FROM count_customer_each_month
 ```
 
 ---
