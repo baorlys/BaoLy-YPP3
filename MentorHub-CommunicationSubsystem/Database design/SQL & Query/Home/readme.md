@@ -1,8 +1,8 @@
-# Dashboard
+# Home
 
-![img](../../Entity/Dashboard%20-%20Entity.png)
-![img](../../Detail/Dashboard.png)
-![img](../../../UX-UI%20design/Version3/Dashboard/Dashboard.png)
+![img](../../Entity/Home%20-%20Entity.png)
+![img](../../Detail/Home.png)
+![img](../../../UX-UI%20design/Version3/Workspace/Workspace%20-%20Thread.png)
 
 **[DBML FILE](dbml.md)**
 
