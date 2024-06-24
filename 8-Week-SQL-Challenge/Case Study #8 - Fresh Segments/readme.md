@@ -439,12 +439,6 @@ WHERE month_year BETWEEN '2018-09-01' AND '2019-08-01'
 
 ```
 
-**5 - Provide a possible reason why the max average composition might change from month to month? Could it signal something is not quite right with the overall business model for Fresh Segments?**
-
-```sql
-
-```
-
 ---
 
 [**Case Study #1 - Danny's Diner**](../Case%20Study%20%231%20-%20Danny's%20Diner)
