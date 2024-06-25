@@ -7,4 +7,9 @@ public class ButtonForward extends Button {
     String press() {
         return "forward button clicked";
     }
+
+    @Override
+    public String doubleClick() {
+        return null;
+    }
 }

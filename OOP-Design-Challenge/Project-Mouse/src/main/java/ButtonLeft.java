@@ -8,4 +8,9 @@ public class ButtonLeft extends Button {
     String press() {
         return "left button clicked";
     }
+
+    @Override
+    public String doubleClick() {
+        return "left button double clicked";
+    }
 }

@@ -7,4 +7,9 @@ public class ButtonBack extends Button {
     String press() {
         return "back button clicked";
     }
+
+    @Override
+    public String doubleClick() {
+        return null;
+    }
 }

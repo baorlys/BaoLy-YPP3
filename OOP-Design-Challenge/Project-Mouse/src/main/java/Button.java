@@ -5,4 +5,7 @@ public abstract class Button {
         this.name = name;
     }
     abstract String press();
+
+
+    abstract public String doubleClick();
 }
