@@ -1,14 +1,10 @@
 public class Sensor {
-    Point prev;
+    Point defaultPoint = new Point(0, 0);
 
-    public Sensor(Point point) {
-        this.prev = point;
-    }
 
     public DetectInfo detect(Point curr) {
-        double deg = prev.calDegree(curr);
-        double distance = prev.calDistance(curr);
-        this.prev = curr;
+        double deg = defaultPoint.calDegree(curr);
+        double distance = defaultPoint.calDistance(curr);
         return new DetectInfo(deg, distance);
     }
 

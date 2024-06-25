@@ -13,4 +13,5 @@ public class Position {
     public boolean equals(Position position) {
         return this.point.equals(position.point);
     }
+
 }
