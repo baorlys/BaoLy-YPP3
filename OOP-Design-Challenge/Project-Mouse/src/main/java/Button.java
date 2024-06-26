@@ -7,5 +7,7 @@ public abstract class Button {
     abstract String press();
 
 
-    abstract public String doubleClick();
+    public String doubleClick() {
+        return null;
+    };
 }

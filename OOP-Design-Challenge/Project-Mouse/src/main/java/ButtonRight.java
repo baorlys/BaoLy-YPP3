@@ -8,8 +8,5 @@ public class ButtonRight extends Button {
         return "right button clicked";
     }
 
-    @Override
-    public String doubleClick() {
-        return null;
-    }
+
 }

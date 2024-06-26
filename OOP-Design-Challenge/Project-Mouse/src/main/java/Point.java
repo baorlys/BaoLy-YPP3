@@ -8,6 +8,7 @@ public class Point {
 
 
 
+    // Method to calculate the degree between two points
     public double calDegree(Point nextPoint) {
         double x = nextPoint.x - this.x;
         double y = nextPoint.y - this.y;
@@ -18,12 +19,16 @@ public class Point {
         return deg;
     }
 
+
+    // Method to calculate the distance between two points
     public double calDistance(Point nextPoint) {
         double x = nextPoint.x - this.x;
         double y = nextPoint.y - this.y;
         return Math.sqrt(x*x + y*y);
     }
 
+
+    // Method to get the position of the point by degree and distance
     public Point getNextPoint(double deg, double distance) {
         double rad = Math.toRadians(deg);
         int x = (int) (this.x + distance * Math.cos(rad));

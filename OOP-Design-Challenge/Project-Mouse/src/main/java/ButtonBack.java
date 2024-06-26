@@ -8,8 +8,5 @@ public class ButtonBack extends Button {
         return "back button clicked";
     }
 
-    @Override
-    public String doubleClick() {
-        return null;
-    }
+
 }

@@ -8,8 +8,5 @@ public class ButtonForward extends Button {
         return "forward button clicked";
     }
 
-    @Override
-    public String doubleClick() {
-        return null;
-    }
+
 }
