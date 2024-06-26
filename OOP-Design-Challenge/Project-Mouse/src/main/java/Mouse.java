@@ -10,7 +10,7 @@ public class Mouse {
     public ArrayList<Button> buttons;
     public Wheel wheel;
     public Sensor sensor;
-    public Position position;
+    public Position pointer;
     public Body body;
 
     public TargetObject targetObject;
@@ -28,7 +28,7 @@ public class Mouse {
     public String pressButton(String btn) {
         for (Button button : buttons) {
             if (button.name.equals(btn)) {
-                return button.press() + " at position: " + position.point.x + " " + position.point.y;
+                return button.press() + " at position: " + pointer.point.x + " " + pointer.point.y;
             }
         }
         throw new IllegalArgumentException("Button not found");
@@ -50,8 +50,8 @@ public class Mouse {
         DetectInfo detectInfo = this.detectMove(currPointSensor);
         double deg = detectInfo.deg;
         double distance = detectInfo.distance * sensitivity;
-        this.position.move(deg, distance);
-        return this.position;
+        this.pointer.move(deg, distance);
+        return this.pointer;
     }
 
 
@@ -97,7 +97,7 @@ public class Mouse {
     public String doubleClickButtonLeft() {
         for (Button button : buttons) {
             if (button.name.equals("Left")) {
-                return button.doubleClick() + " at position: " + position.point.x + " " + position.point.y;
+                return button.doubleClick() + " at position: " + pointer.point.x + " " + pointer.point.y;
             }
         }
         throw new IllegalArgumentException("Button not found");

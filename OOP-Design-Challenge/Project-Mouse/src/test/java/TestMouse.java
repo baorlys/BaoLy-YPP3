@@ -53,7 +53,7 @@ public class TestMouse {
         mouse.sensor = new Sensor();
 
         // Add default position of pointer to the mouse
-        mouse.position = new Position(new Point(0,0));
+        mouse.pointer = new Position(new Point(0,0));
 
         // Add body to the mouse
         mouse.body = new Body(new Shape(), new Material("Aluminum"), "black");
@@ -166,8 +166,8 @@ public class TestMouse {
     @Test
     public void testMove() {
         Point newPoint = new Point(1,1);
-        Position position = mouse.move(newPoint);
-        assert(position.point.equals(new Point(1,1)));
+        Position pointer = mouse.move(newPoint);
+        assert(pointer.point.equals(new Point(1,1)));
     }
 
 
@@ -175,10 +175,10 @@ public class TestMouse {
     @Test
     public void testMove2() {
         Point newPointSensor = new Point(1,1);
-        Position position = mouse.move(newPointSensor);
-        assert(position.point.equals(new Point(1,1)));
-        Position position2 = mouse.move(newPointSensor);
-        assert(position2.point.equals(new Point(2,2)));
+        Position pointer = mouse.move(newPointSensor);
+        assert(pointer.point.equals(new Point(1,1)));
+        Position pointer2 = mouse.move(newPointSensor);
+        assert(pointer2.point.equals(new Point(2,2)));
     }
 
 
@@ -230,7 +230,6 @@ public class TestMouse {
         assert(mouse.sensitivity == 1);
     }
 
-
     // This test checks if the sensitivity is decreased with a negative value
     @Test
     public void testDecreaseSensitivityWithNegativeValue() {
@@ -238,8 +237,6 @@ public class TestMouse {
             mouse.decreaseSensitivity(-3);
         });
     }
-
-
 
 
     // This test checks if the decrease sensitivity method throws an exception
