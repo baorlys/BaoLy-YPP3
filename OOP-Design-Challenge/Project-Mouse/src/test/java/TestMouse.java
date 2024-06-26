@@ -28,19 +28,41 @@ public class TestMouse {
                 new Border("red",1),
                 new Material("Aluminum"),
                 0.3));
+        mouse.lights.add(new Light(
+                new Shape(),
+                "yellow",
+                true,
+                new Border("yellow",1),
+                new Material("Aluminum"),
+                0.3));
 
+        // Add buttons to the mouse
         mouse.buttons = new ArrayList<Button>();
         mouse.buttons.add(new ButtonLeft());
         mouse.buttons.add(new ButtonRight());
         mouse.buttons.add(new ButtonForward());
         mouse.buttons.add(new ButtonBack());
 
+        //
+        mouse.switchMouse = new SwitchMouse(new Shape(), "red", new Material("Aluminum"));
+
+        // Add wheel to the mouse
         mouse.wheel = new Wheel();
+
+        // Add sensor to the mouse
         mouse.sensor = new Sensor();
+
+        // Add default position of pointer to the mouse
         mouse.position = new Position(new Point(0,0));
+
+        // Add body to the mouse
         mouse.body = new Body(new Shape(), new Material("Aluminum"), "black");
+
+        // Add default sensitivity to the mouse
         mouse.sensitivity = 1;
-        mouse.targetObject = new TargetObject();
+
+        // Add target object to the mouse
+        mouse.targetObject = new TargetObject(new Position(new Point(1,1)));
     }
 
     // This test checks if the mouse is connected to a device
@@ -67,6 +89,11 @@ public class TestMouse {
         assert(mouse.turnLightOff(0).equals("light is off"));
     }
 
+
+    @Test
+    public void testTurnAllLightsOn() {
+        assert(mouse.turnAllLightsOn().split("\n").length == 2);
+    }
 
     // This test check button left press
     @Test
@@ -162,6 +189,22 @@ public class TestMouse {
         assert(mouse.sensitivity == 2);
     }
 
+    // This test checks if the increase sensitivity method works with a value
+    @Test
+    public void testIncreaseSensitivity2() {
+        mouse.sensitivity = 1;
+        mouse.increaseSensitivity(3);
+        assert(mouse.sensitivity == 4);
+    }
+
+    // This test checks if the sensitivity is increased with a negative value
+    @Test
+    public void testIncreaseSensitivityWithNegativeValue() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            mouse.increaseSensitivity(-3);
+        });
+    }
+
     // This test checks if the increase sensitivity method throws an exception
     @Test
     public void testIncreaseSensitivityThrowException() {
@@ -179,6 +222,26 @@ public class TestMouse {
         assert(mouse.sensitivity == 1);
     }
 
+    // This test checks if the decrease sensitivity method works with a value
+    @Test
+    public void testDecreaseSensitivity2() {
+        mouse.sensitivity = 4;
+        mouse.decreaseSensitivity(3);
+        assert(mouse.sensitivity == 1);
+    }
+
+
+    // This test checks if the sensitivity is decreased with a negative value
+    @Test
+    public void testDecreaseSensitivityWithNegativeValue() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            mouse.decreaseSensitivity(-3);
+        });
+    }
+
+
+
+
     // This test checks if the decrease sensitivity method throws an exception
     @Test
     public void testDecreaseSensitivityThrowException() {
@@ -187,15 +250,30 @@ public class TestMouse {
         });
     }
 
+    // This test checks if the mouse is hovering over the target object
+    @Test
+    public void testHoverTargetObject() {
+        assert(mouse.hoverTargetObject().equals("hovering over target object"));
+    }
+
+    // This test checks if the mouse is clicking the target object
+    @Test
+    public void testClickTargetObject() {
+        assert(mouse.clickTargetObject().equals("clicking target object"));
+    }
+
+    // This test checks if the mouse is turned on
+    @Test
+    public void turnOnMouse() {
+        assert(mouse.turnOn().equals("mouse is on"));
+    }
 
 
-
-
-
-
-
-
-
+    // This test checks if the mouse is turned off
+    @Test
+    public void turnOffMouse() {
+        assert(mouse.turnOff().equals("mouse is off"));
+    }
 
 
 

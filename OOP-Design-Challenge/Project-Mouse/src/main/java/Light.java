@@ -6,7 +6,6 @@ public class Light {
     Material material;
     double brightness;
 
-
     public Light(Shape shape, String color, Boolean fill, Border border, Material material, double brightness) {
         this.shape = shape;
         this.color = color;
