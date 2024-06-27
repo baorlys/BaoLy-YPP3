@@ -4,13 +4,6 @@
 ![img](../../Detail/Meeting.png)
 ![img](../../../UX-UI%20design/Version3/VideoCall-Meeting/Meeting.png)
 
-**[DBML FILE](dbml.md)**
-
-## Create table and insert data
-
-```sql
-```
-
 ## Query
 
 ```sql

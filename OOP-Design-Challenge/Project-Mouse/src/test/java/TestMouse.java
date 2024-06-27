@@ -19,6 +19,7 @@ public class TestMouse {
 
         mouse.connectedDevices = new ArrayList<Device>();
         mouse.connectedDevices.add(new Device(new ScreenInfo()));
+        mouse.connectedDevices.add(new Device(new ScreenInfo()));
 
         mouse.lights = new ArrayList<Light>();
         mouse.lights.add(new Light(
@@ -273,6 +274,11 @@ public class TestMouse {
     }
 
 
+    // This test checks max screen size
+    @Test
+    public void testMaxScreenSize() {
+        assert (mouse.getMaxScreenSize() == 1024 + 1024);
+    }
 
 
 }

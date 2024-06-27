@@ -165,4 +165,11 @@ public class Mouse {
     }
 
 
+    public int getMaxScreenSize() {
+        int maxScreenWidth = 0;
+        for (Device device : connectedDevices) {
+            maxScreenWidth += device.screenInfo.SCREEN_WIDTH;
+        }
+        return maxScreenWidth;
+    }
 }

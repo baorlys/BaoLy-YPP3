@@ -4,23 +4,6 @@
 ![img](../../Detail/DirectMessage.png)
 ![img](../../../UX-UI%20design/Version3/DMs/DMs-1.png)
 
-**[DBML FILE](dbml.md)**
-
-## Create table and insert data
-
-```sql
-CREATE TABLE `block_list` (
-  `user_id` int DEFAULT null,
-  `user_id_is_blocked` int,
-  `dms_id` int
-);
-ALTER TABLE `block_list` ADD FOREIGN KEY (`user_id`) REFERENCES `user_info` (`id`);
-
-ALTER TABLE `block_list` ADD FOREIGN KEY (`user_id_is_blocked`) REFERENCES `user_info` (`id`);
-
-ALTER TABLE `block_list` ADD FOREIGN KEY (`dms_id`) REFERENCES `direct_message` (`id`);
-```
-
 ## Query
 
 ```sql
