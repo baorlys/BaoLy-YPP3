@@ -1,6 +1,6 @@
 import java.awt.*;
 
-public class Light implements Switchable{
+public class Light implements ISwitchable {
     Color color;
     String name;
     PowerStatus powerStatus = PowerStatus.OFF;

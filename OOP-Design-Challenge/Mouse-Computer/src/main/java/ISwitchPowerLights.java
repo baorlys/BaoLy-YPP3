@@ -1,4 +1,4 @@
-public interface SwitchPowerLights {
+public interface ISwitchPowerLights {
     void turnOnLights();
     void turnOffLights();
 }

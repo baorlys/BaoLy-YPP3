@@ -1,8 +1,6 @@
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
-public class Mouse implements Switchable, Connectable, MouseActions {
+public class Mouse implements ISwitchable, IConnectable, IMouseActions {
     private TargetObject targetObject;
     private String name;
     private List<Button> buttons;

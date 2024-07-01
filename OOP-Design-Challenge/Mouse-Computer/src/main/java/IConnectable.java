@@ -1,4 +1,4 @@
-public interface Connectable {
+public interface IConnectable {
     ConnectionStatus connect();
     ConnectionStatus disconnect();
 }

@@ -1,6 +1,6 @@
 import java.util.List;
 
-public class Wheel implements SwitchPowerLights {
+public class Wheel implements ISwitchPowerLights {
     String material;
     List<Light> lights;
     public Wheel(String material) {

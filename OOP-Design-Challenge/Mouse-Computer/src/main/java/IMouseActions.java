@@ -1,6 +1,4 @@
-import java.util.HashMap;
-
-public interface MouseActions {
+public interface IMouseActions {
     Point moveMouse(Point point);
     Point clickMouse(String buttonName, Point point);
     Point doubleClickMouse(String buttonName, Point point);

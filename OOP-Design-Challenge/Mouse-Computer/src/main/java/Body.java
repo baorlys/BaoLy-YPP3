@@ -1,6 +1,6 @@
 import java.util.List;
 
-public class Body implements SwitchPowerLights {
+public class Body implements ISwitchPowerLights {
     String typeBody;
     ShapeBody shapeBody;
     List<Light> lights;

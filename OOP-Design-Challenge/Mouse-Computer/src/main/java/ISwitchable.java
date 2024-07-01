@@ -1,4 +1,4 @@
-public interface Switchable {
+public interface ISwitchable {
     PowerStatus powerOn();
     PowerStatus powerOff();
 }
