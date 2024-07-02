@@ -25,7 +25,7 @@ public class MouseTest {
                 .sensor("hero", 1000)
                 .wheel("rubber",
                         List.of(new Light(Color.red, "wheel")))
-                .connectionType("wireless")
+                .connectionType(new WirelessConnection("2.4GHz"))
                 .targetObject(new MonitorComputer("monitor",1920,1080))
                 .currentAction(MouseAction.NONE)
                 .build();
@@ -97,24 +97,15 @@ public class MouseTest {
     @Test
     // Test the connection of the mouse
     void testMouseConnect() {
-        mouse.connect();
-        assertEquals(ConnectionStatus.CONNECTED, mouse.getConnectionStatus());
+        Pair<ConnectionType, ConnectionStatus> connection = mouse.connect();
+        assertEquals(ConnectionStatus.CONNECTED, connection.getValue());
+
     }
 
     @Test
     // Test the disconnection of the mouse
     void testMouseDisconnect() {
-        mouse.disconnect();
-        assertEquals(ConnectionStatus.DISCONNECTED, mouse.getConnectionStatus());
-    }
-
-    @Test
-    // Test the connection type of the mouse
-    void testMouseConnectionTypeSet() {
-        mouse.setConnectionType(ConnectionType.WIRED);
-        assertEquals(ConnectionType.WIRED, mouse.getConnectionType());
-        mouse.setConnectionType(ConnectionType.WIRELESS);
-        assertEquals(ConnectionType.WIRELESS, mouse.getConnectionType());
+        assertEquals(ConnectionStatus.DISCONNECTED, mouse.disconnect());
     }
 
     @Test
@@ -150,8 +141,47 @@ public class MouseTest {
         assertEquals(MouseAction.DOUBLE_CLICK, mouse.getCurrentAction());
     }
 
+    @Test
+    // Test the drag action of the mouse
+    void testMouseDrag() {
+        Point startPoint = new Point(100, 20);
+        Point endPoint = new Point(200, 50);
+        mouse.dragMouse(startPoint, endPoint);
+        assertEquals(MouseAction.DRAG, mouse.getCurrentAction());
+    }
+
+    @Test
+    // Test the scroll up action of the mouse
+    void testMouseScrollUp() {
+        Point point = new Point(100, 20);
+        mouse.scrollUpMouse(2, point);
+        assertEquals(MouseAction.SCROLL_UP, mouse.getCurrentAction());
+    }
+
+    @Test
+    // Test the scroll down action of the mouse
+    void testMouseScrollDown() {
+        Point point = new Point(100, 20);
+        mouse.scrollDownMouse(2, point);
+        assertEquals(MouseAction.SCROLL_DOWN, mouse.getCurrentAction());
+    }
 
 
+    @Test
+    // Test hovering over an element action of the mouse
+    void testMouseHoverElement() {
+        Point point = new Point(100, 20);
+        mouse.moveMouseToElement("element", point);
+        assertEquals(MouseAction.MOVE_TO_ELEMENT, mouse.getCurrentAction());
+    }
+
+    @Test
+    // Test clicking on an element action of the mouse
+    void testMouseClickElement() {
+        Point point = new Point(100, 20);
+        mouse.clickMouseOnElement("element", "left", point);
+        assertEquals(MouseAction.CLICK_ON_ELEMENT, mouse.getCurrentAction());
+    }
 
 
 
@@ -195,17 +225,7 @@ public class MouseTest {
         assertEquals("rubber", mouse.getWheel().material);
     }
 
-    @Test
-        // Test the connection type of the mouse
-    void testMouseConnectionType() {
-        assertEquals(ConnectionType.WIRELESS, mouse.getConnectionType());
-    }
 
-    @Test
-        // Test the connection status of the mouse
-    void testMouseConnectionStatus() {
-        assertEquals(ConnectionStatus.DISCONNECTED, mouse.getConnectionStatus());
-    }
 
     @Test
         // Test the lights of the mouse

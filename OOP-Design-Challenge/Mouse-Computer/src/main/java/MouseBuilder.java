@@ -37,12 +37,11 @@ public class MouseBuilder {
 
     public MouseBuilder sensor(String sensorName, int timeResponse) {
         this.mouse.setSensor(new Sensor(sensorName, timeResponse));
-        this.mouse.setTimeResponse(timeResponse);
         return this;
     }
 
-    public MouseBuilder connectionType(String connectionType) {
-        this.mouse.setConnectionType(ConnectionType.valueOf(connectionType.toUpperCase()));
+    public MouseBuilder connectionType(IConnectionType connectionType) {
+        this.mouse.setConnectionType(connectionType);
         return this;
     }
 

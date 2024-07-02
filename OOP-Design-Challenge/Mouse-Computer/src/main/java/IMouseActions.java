@@ -1,12 +1,12 @@
-public interface IMouseActions {
-    Point moveMouse(Point point);
-    Point clickMouse(String buttonName, Point point);
-    Point doubleClickMouse(String buttonName, Point point);
-    Point scrollUpMouse(int scrollAmount, Point point);
-    Point scrollDownMouse(int scrollAmount, Point point);
-    Point dragMouse(Point startPoint, Point endPoint);
-    Point moveMouseToElement(String elementName, Point point);
-    Point clickMouseOnElement(String elementName, String buttonName, Point point);
+public interface IMouseActions extends IConnectionType {
+    void moveMouse(Point point);
+    void clickMouse(String buttonName, Point point);
+    void doubleClickMouse(String buttonName, Point point);
+    void scrollUpMouse(int scrollAmount, Point point);
+    void scrollDownMouse(int scrollAmount, Point point);
+    void dragMouse(Point startPoint, Point endPoint);
+    void moveMouseToElement(String elementName, Point point);
+    void clickMouseOnElement(String elementName, String buttonName, Point point);
     Point doubleClickMouseOnElement(String elementName, String buttonName, Point point);
     Point scrollUpMouseOnElement(String elementName, int scrollAmount, Point point);
     Point scrollDownMouseOnElement(String elementName, int scrollAmount, Point point);

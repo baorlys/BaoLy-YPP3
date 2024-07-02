@@ -1,17 +1,15 @@
 import java.util.List;
 
-public class Mouse implements ISwitchable, IConnectable, IMouseActions {
+public class Mouse implements ISwitchable, IMouseActions {
     private TargetObject targetObject;
     private String name;
     private List<Button> buttons;
     private int dpi;
     private Sensor sensor;
-    private ConnectionType connectionType;
+    private IConnectionType connectionType;
     private Wheel wheel;
     private Body body;
 
-    // Default value for connectionStatus is DISCONNECTED
-    private ConnectionStatus connectionStatus = ConnectionStatus.DISCONNECTED;
     // Default value for powerStatus is OFF
     private PowerStatus powerStatus = PowerStatus.OFF;
 
@@ -20,7 +18,6 @@ public class Mouse implements ISwitchable, IConnectable, IMouseActions {
 
     // Default point for mouseAction is (0,0)
     private final Point currentPositionSensor = new Point(0, 0);
-    private int timeResponse;
 
     public void setName(String name) {
         this.name = name;
@@ -54,11 +51,11 @@ public class Mouse implements ISwitchable, IConnectable, IMouseActions {
         this.sensor = sensor;
     }
 
-    public ConnectionType getConnectionType() {
+    public IConnectionType getConnectionType() {
         return connectionType;
     }
 
-    public void setConnectionType(ConnectionType connectionType) {
+    public void setConnectionType(IConnectionType connectionType) {
         this.connectionType = connectionType;
     }
 
@@ -78,13 +75,6 @@ public class Mouse implements ISwitchable, IConnectable, IMouseActions {
         this.body = body;
     }
 
-    public ConnectionStatus getConnectionStatus() {
-        return connectionStatus;
-    }
-
-    public void setConnectionStatus(ConnectionStatus connectionStatus) {
-        this.connectionStatus = connectionStatus;
-    }
 
     public PowerStatus getPowerStatus() {
         return powerStatus;
@@ -110,84 +100,68 @@ public class Mouse implements ISwitchable, IConnectable, IMouseActions {
         this.currentAction = currentAction;
     }
 
-    public void setTimeResponse(int timeResponse) {
-        this.timeResponse = timeResponse;
-    }
-
-    public int getTimeResponse() {
-        return timeResponse;
-    }
-
     @Override
-    public ConnectionStatus connect() {
-        return this.connectionStatus = ConnectionStatus.CONNECTED;
+    public Pair<ConnectionType, ConnectionStatus> connect() {
+        return this.connectionType.connect();
     }
 
     @Override
     public ConnectionStatus disconnect() {
-        return this.connectionStatus = ConnectionStatus.DISCONNECTED;
+        return this.connectionType.disconnect();
     }
 
     @Override
-    public PowerStatus powerOn() {
+    public void powerOn() {
         sensor.detecting();
-        return this.powerStatus = PowerStatus.ON;
+        this.powerStatus = PowerStatus.ON;
     }
 
     @Override
-    public PowerStatus powerOff() {
+    public void powerOff() {
 
-        return this.powerStatus = PowerStatus.OFF;
+        this.powerStatus = PowerStatus.OFF;
     }
 
 
     @Override
-    public Point moveMouse(Point point) {
+    public void moveMouse(Point point) {
         currentAction = MouseAction.MOVE;
-        return null;
     }
 
     @Override
-    public Point clickMouse(String buttonName, Point point) {
+    public void clickMouse(String buttonName, Point point) {
         currentAction = MouseAction.CLICK;
-        return null;
     }
 
     @Override
-    public Point doubleClickMouse(String buttonName, Point point) {
+    public void doubleClickMouse(String buttonName, Point point) {
         currentAction = MouseAction.DOUBLE_CLICK;
-        return null;
     }
 
     @Override
-    public Point scrollUpMouse(int scrollAmount, Point point) {
+    public void scrollUpMouse(int scrollAmount, Point point) {
         currentAction = MouseAction.SCROLL_UP;
-        return null;
     }
 
     @Override
-    public Point scrollDownMouse(int scrollAmount, Point point) {
+    public void scrollDownMouse(int scrollAmount, Point point) {
         currentAction = MouseAction.SCROLL_DOWN;
-        return null;
     }
 
 
     @Override
-    public Point dragMouse(Point startPoint, Point endPoint) {
+    public void dragMouse(Point startPoint, Point endPoint) {
         currentAction = MouseAction.DRAG;
-        return null;
     }
 
     @Override
-    public Point moveMouseToElement(String elementName, Point point) {
+    public void moveMouseToElement(String elementName, Point point) {
         currentAction = MouseAction.MOVE_TO_ELEMENT;
-        return null;
     }
 
     @Override
-    public Point clickMouseOnElement(String elementName, String buttonName, Point point) {
+    public void clickMouseOnElement(String elementName, String buttonName, Point point) {
         currentAction = MouseAction.CLICK_ON_ELEMENT;
-        return null;
     }
 
     @Override

@@ -15,14 +15,12 @@ public class Light implements ISwitchable {
         this.name = name;
     }
 
-    public PowerStatus powerOn() {
+    public void powerOn() {
         powerStatus = PowerStatus.ON;
-        return powerStatus;
     }
 
     @Override
-    public PowerStatus powerOff() {
+    public void powerOff() {
         powerStatus = PowerStatus.OFF;
-        return powerStatus;
     }
 }
