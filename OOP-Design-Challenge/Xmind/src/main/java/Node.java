@@ -54,4 +54,16 @@ public class Node {
     public void removeChild(Node topic) {
         children.remove(topic);
     }
+
+    public void moveToParent(Node newParent) {
+        parent.removeChild(this);
+        newParent.addChild(this);
+        this.parent = newParent;
+    }
+
+    public void removeParent() {
+        this.parent.removeChild(this);
+        this.parent = null;
+        this.type = NodeType.FLOATING_TOPIC;
+    }
 }

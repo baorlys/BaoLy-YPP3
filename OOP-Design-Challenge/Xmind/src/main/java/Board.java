@@ -6,11 +6,6 @@ public class Board {
 
     private List<Sheet> sheets = new ArrayList<>();
 
-    public Board(String name) {
-        this.name = name;
-    }
-
-
     public String getName() {
         return name;
     }
@@ -34,5 +29,14 @@ public class Board {
 
     public void addSheet(String sheetName) {
         sheets.add(new Sheet(sheetName));
+    }
+
+    public Sheet getFirstSheet() {
+        return sheets.get(0);
+    }
+
+    public ExportStatus export(Sheet sheet, FileType type, String filename) {
+        ITypeExport export = ExportFactory.getExport(type);
+        return export.export(sheet, filename);
     }
 }

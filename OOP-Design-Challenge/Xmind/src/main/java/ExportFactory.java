@@ -1,8 +1,12 @@
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 public class ExportFactory {
-    private static final Map<FileType, ITypeExport> exports = new HashMap<>();
+    private static final Map<FileType, ITypeExport> exports = new EnumMap<>(FileType.class);
+    private ExportFactory() {
+
+    }
+
 
     static {
         exports.put(FileType.PNG, new ExportPNG());
