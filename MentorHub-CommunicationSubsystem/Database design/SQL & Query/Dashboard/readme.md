@@ -43,6 +43,7 @@ WHERE
   dms_id IN (SELECT id FROM id_dms) AND
   sender_id != 1 AND
   status_id = 2
+  
 -- 3. Yesterday
 WITH id_dms AS
 (
@@ -88,7 +89,7 @@ SELECT
 FROM
   workspace_member wm
 JOIN 
-  user_info ui ON wm.user_id = ui.id AND is_active = 1
+  `user` u ON wm.user_id = u.id AND is_active = 1
 WHERE workspace_id = 1 
 
 
@@ -100,5 +101,5 @@ FROM
   notification_queue
 WHERE 
   user_id = 1 AND
-  isRead = 0
+  is_read = 0
 ```
