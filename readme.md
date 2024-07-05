@@ -9,3 +9,5 @@
 [**Daily Report**](Daily-Report)
 
 [**Communication Subsystem in MentorHub ecosystem**](MentorHub-CommunicationSubsystem)
+
+[**OOP Design Challenge**](OOP-Design-Challenge)
