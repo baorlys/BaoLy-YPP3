@@ -9,5 +9,5 @@
 ## Challenge 2 - XMind
 
 - Repo [XMind](https://github.com/baorlys/Xmind)
-- Test Case - [TestXmind.java](https://github.com/baorlys/Xmind/blob/main/src/test/java/TestXMind.java)
+- Test Case - [TestXmind.java](https://github.com/baorlys/Xmind/blob/main/src/test/java/xmind/TestXMind.java)
 - Implementation - [src/main](https://github.com/baorlys/Xmind/tree/main/src/main/java)
