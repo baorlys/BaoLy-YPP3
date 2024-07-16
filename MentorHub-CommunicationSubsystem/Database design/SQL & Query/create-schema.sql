@@ -29,15 +29,13 @@ CREATE TABLE [User]
 (
     id int PRIMARY KEY IDENTITY(1,1) NOT NULL,
     email varchar(255),
-    full_name varchar(255),
+    [name] varchar(255),
     dob date DEFAULT null,
-    last_login_at datetime DEFAULT null,
-    is_active tinyInt DEFAULT 1,
     created_at datetime
 );
 
 INSERT INTO [User]
-    (email, full_name, dob, created_at)
+    (email, [name], dob, created_at)
 VALUES
     ('zleffler@example.com', 'Jaquelin Heathcote', GETDATE(), GETDATE()),
     ('brian59@example.com', 'Mr. Abdiel Zemlak II', GETDATE(), GETDATE()),
@@ -298,6 +296,13 @@ CREATE TABLE FeedbackGroup
     id int PRIMARY KEY IDENTITY(1,1) NOT NULL,
     name varchar(255)
 );
+INSERT INTO FeedbackGroup
+    (name)
+VALUES
+    ( 'Bug'),
+    ( 'Feature Request'),
+    ( 'Improvement'),
+    ( 'Others');
 
 DROP TABLE IF EXISTS FeedbackStatus;
 CREATE TABLE FeedbackStatus
@@ -305,6 +310,12 @@ CREATE TABLE FeedbackStatus
     id int PRIMARY KEY IDENTITY(1,1) NOT NULL,
     name varchar(255)
 );
+INSERT INTO FeedbackStatus
+    (name)
+VALUES
+    ( 'Open'),
+    ( 'In Progress'),
+    ( 'Closed');
 
 DROP TABLE IF EXISTS Meeting;
 CREATE TABLE Meeting
@@ -673,8 +684,16 @@ CREATE TABLE Feedback
     status_id int,
     content text,
     send_at datetime,
-    updated_at datetime
+    updated_at datetime DEFAULT null
 );
+INSERT INTO Feedback
+    (user_id, subsystem_id, sender_email, group_id, status_id, content, send_at)
+VALUES
+    (1, 1, 'test@gmail.com', 1, 2, 'Content 1', GETDATE()),
+    (1, 2, 'test@gmail.com', 2, 1, 'Content 2', GETDATE()),
+    (1, 1, 'test@gmail.com', 3, 1, 'Content 3', GETDATE()),
+    (1, 1, 'test@gmail.com', 1, 3, 'Content 4', GETDATE());
+
 
 DROP TABLE IF EXISTS FeedbackAttachment
 CREATE TABLE FeedbackAttachment
@@ -682,6 +701,13 @@ CREATE TABLE FeedbackAttachment
     feedback_id int,
     asset_id int
 );
+INSERT INTO FeedbackAttachment
+    (feedback_id, asset_id)
+VALUES
+    (1, 1),
+    (1, 2),
+    (2, 1),
+    (2, 2);
 
 
 
@@ -693,6 +719,10 @@ CREATE TABLE FeedbackAssignee
     assign_at datetime,
     content text
 );
+INSERT INTO FeedbackAssignee
+    (feedback_id, assignee_id, assign_at, content)
+VALUES
+    (1, 4, GETDATE(), 'Content 1');
 
 
 DROP TABLE IF EXISTS FeedbackResult;
@@ -703,6 +733,12 @@ CREATE TABLE FeedbackResult
     content text,
     send_at datetime
 );
+INSERT INTO FeedbackResult
+    (feedback_id, content, send_at)
+VALUES
+    (4, 'Content 1', GETDATE());
+
+
 
 DROP TABLE IF EXISTS FeedbackResultReply;
 CREATE TABLE FeedbackResultReply
