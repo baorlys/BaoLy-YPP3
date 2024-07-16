@@ -608,7 +608,7 @@ INSERT INTO log_detail (uuid,log_id, event_parameter_id, value) VALUES
 (UUID(),1, 1, 30),
 (UUID(),1, 2, 'minutes'),
 (UUID(),2, 1, 30),
-(UUID(),2, 2, 'minutes'),
+(UUID(),2, 2, 'hours'),
 (UUID(),3, 1, 30),
 (UUID(),3, 2, 'minutes'),
 (UUID(),4, 1, 30),
@@ -641,7 +641,9 @@ VALUES
 INSERT INTO `feedback_status` (`uuid`, `name`)
 VALUES
 (UUID(), 'Open'),
+(UUID(), 'In progress')
 (UUID(), 'Closed');
+
 
 -- Feedback
 INSERT INTO `feedback` (`uuid`, `user_id`, `sender_email`, `group_id`, `status_id`, `content`, `send_at`, `updated_at`)

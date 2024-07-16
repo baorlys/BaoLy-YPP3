@@ -9,6 +9,21 @@ for xml path('')
 );
 exec sp_executesql @sql;
 
+DROP TABLE IF EXISTS Subsystem
+CREATE TABLE Subsystem
+(
+    id int PRIMARY KEY IDENTITY(1,1) NOT NULL,
+    name varchar(255),
+    description varchar(500),
+    created_at datetime
+);
+INSERT INTO Subsystem
+    (name, description, created_at)
+VALUES
+    ('Communication', 'Communication Subsystem', GETDATE()),
+    ('Course Management', 'Course Management Subsystem', GETDATE()),
+    ('Mentoring Hub', 'Mentoring Hub', GETDATE());
+
 DROP TABLE IF EXISTS [User];
 CREATE TABLE [User]
 (
@@ -22,27 +37,27 @@ CREATE TABLE [User]
 );
 
 INSERT INTO [User]
-    (email, full_name, dob, last_login_at, is_active, created_at)
+    (email, full_name, dob, created_at)
 VALUES
-    ('zleffler@example.com', 'Jaquelin Heathcote', '2015-07-27', GETDATE(), 0, GETDATE()),
-    ('brian59@example.com', 'Mr. Abdiel Zemlak II', '2020-11-09', GETDATE(), 1, GETDATE()),
-    ('jaquan94@example.com', 'Dr. Clementine Rice', '2003-11-08', GETDATE(), 0, GETDATE()),
-    ('brook64@example.net', 'Whitney Reilly', '1992-04-02', GETDATE(), 1, GETDATE()),
-    ('lynch.daisy@example.com', 'Merl Renner', '1974-06-03', GETDATE(), 0, GETDATE()),
-    ('jerome.mccullough@example.com', 'Annabell Welch', '2022-05-20', GETDATE(), 0, GETDATE()),
-    ('eusebio.cartwright@example.org', 'Miss Nadia Wilkinson MD', '1987-09-05', GETDATE(), 0, GETDATE()),
-    ('megane42@example.net', 'Tessie Beahan', '2020-08-07', GETDATE(), 0, GETDATE()),
-    ('tfahey@example.org', 'Maximillian Lynch', '1993-10-15', GETDATE(), 0, GETDATE()),
-    ('christiansen.nico@example.org', 'Jayson Walker', '1995-12-24', GETDATE(), 1, GETDATE()),
-    ('ehegmann@example.com', 'Misty Carter V', '1977-05-04', GETDATE(), 1, GETDATE()),
-    ('harber.kiera@example.com', 'Arturo Johns IV', '1995-11-15', GETDATE(), 0, GETDATE()),
-    ('zaria19@example.org', 'Prof. Torey Hammes', '1991-07-17', GETDATE(), 1, GETDATE()),
-    ('dion.muller@example.org', 'Izaiah Murazik IV', '2013-04-25', GETDATE(), 0, GETDATE()),
-    ('blair54@example.com', 'Dr. Erwin Weber', '2021-02-28', GETDATE(), 1, GETDATE()),
-    ('wanda.herman@example.net', 'Miss Alexandrea Howe', '1986-11-02', GETDATE(), 0, GETDATE()),
-    ('pmuller@example.com', 'Lowell Denesik', '2002-07-03', GETDATE(), 0, GETDATE()),
-    ('aubree.emard@example.org', 'Prof. Ryley Mante V', '1977-08-18', GETDATE(), 1, GETDATE()),
-    ('sallie.crist@example.com', 'Dr. Donnie Erdman MD', '1975-04-02', GETDATE(), 0, GETDATE());
+    ('zleffler@example.com', 'Jaquelin Heathcote', GETDATE(), GETDATE()),
+    ('brian59@example.com', 'Mr. Abdiel Zemlak II', GETDATE(), GETDATE()),
+    ('jaquan94@example.com', 'Dr. Clementine Rice', GETDATE(), GETDATE()),
+    ('brook64@example.net', 'Whitney Reilly', GETDATE(), GETDATE()),
+    ('lynch.daisy@example.com', 'Merl Renner', GETDATE(), GETDATE()),
+    ('jerome.mccullough@example.com', 'Annabell Welch', GETDATE(), GETDATE()),
+    ('eusebio.cartwright@example.org', 'Miss Nadia Wilkinson MD', GETDATE(), GETDATE()),
+    ('megane42@example.net', 'Tessie Beahan', GETDATE(), GETDATE()),
+    ('tfahey@example.org', 'Maximillian Lynch', GETDATE(), GETDATE()),
+    ('christiansen.nico@example.org', 'Jayson Walker', GETDATE(), GETDATE()),
+    ('ehegmann@example.com', 'Misty Carter V', GETDATE(), GETDATE()),
+    ('harber.kiera@example.com', 'Arturo Johns IV', GETDATE(), GETDATE()),
+    ('zaria19@example.org', 'Prof. Torey Hammes', GETDATE(), GETDATE()),
+    ('dion.muller@example.org', 'Izaiah Murazik IV', GETDATE(), GETDATE()),
+    ('blair54@example.com', 'Dr. Erwin Weber', GETDATE(), GETDATE()),
+    ('wanda.herman@example.net', 'Miss Alexandrea Howe', GETDATE(), GETDATE()),
+    ('pmuller@example.com', 'Lowell Denesik', GETDATE(), GETDATE()),
+    ('aubree.emard@example.org', 'Prof. Ryley Mante V', GETDATE(), GETDATE()),
+    ('sallie.crist@example.com', 'Dr. Donnie Erdman MD', GETDATE(), GETDATE());
 
 
 DROP TABLE IF EXISTS NotificationType;
@@ -146,6 +161,7 @@ INSERT INTO MeetingParticipantStatus
     (name)
 VALUES
     ( 'Invited'),
+    ( 'Accepted'),
     ( 'Joined'),
     ( 'Left'),
     ( 'Declined');
@@ -357,8 +373,17 @@ CREATE TABLE NotificationQueue
     user_id int,
     notification_type_id int,
     content text,
-    is_read tinyInt DEFAULT 1
+    is_read tinyInt DEFAULT 0
 );
+INSERT INTO NotificationQueue
+    (user_id, notification_type_id, content)
+VALUES
+    (1, 4, 'Content 1'),
+    (1, 4, 'Content 2'),
+    (1, 4, 'Content 3'),
+    (1, 4, 'Content 4'),
+    (1, 4, 'Content 5'),
+    (1, 4, 'Content 6');
 
 DROP TABLE IF EXISTS Permission;
 CREATE TABLE Permission
@@ -488,8 +513,17 @@ CREATE TABLE Log
     id int PRIMARY KEY IDENTITY(1,1) NOT NULL,
     user_id int,
     event_type_id int,
-    logTime datetime
+    log_time datetime
 );
+INSERT INTO [Log]
+    (user_id, event_type_id, log_time)
+VALUES
+    (1, 2, GETDATE()),
+    (2, 2, GETDATE()),
+    (3, 2, GETDATE()),
+    (4, 2, GETDATE()),
+    (5, 2, GETDATE());
+
 
 
 DROP TABLE IF EXISTS EventParameter;
@@ -500,6 +534,11 @@ CREATE TABLE EventParameter
     data_type varchar(255),
     event_type_id int
 );
+INSERT INTO EventParameter
+    (name, data_type, event_type_id)
+VALUES
+    ('workspace_id', 'int', 2),
+    ('duration', 'int', 2);
 
 DROP TABLE IF EXISTS LogDetail;
 CREATE TABLE LogDetail
@@ -509,6 +548,20 @@ CREATE TABLE LogDetail
     event_parameter_id int,
     value varchar(255)
 );
+INSERT INTO LogDetail
+    (log_id, event_parameter_id, [value])
+VALUES
+    (1, 1, '1'),
+    (2, 1, '1'),
+    (3, 1, '1'),
+    (4, 1, '1'),
+    (5, 1, '1'),
+    (1, 2, '20'),
+    (2, 2, '30'),
+    (3, 2, '40'),
+    (4, 2, '50'),
+    (5, 2, '60');
+
 
 DROP TABLE IF EXISTS ChannelPrivateMember;
 CREATE TABLE ChannelPrivateMember
@@ -568,10 +621,10 @@ DROP TABLE IF EXISTS MessageAttachment;
 CREATE TABLE MessageAttachment
 (
     message_id int,
-    access_id int
+    asset_id int
 );
 INSERT INTO MessageAttachment
-    (message_id, access_id)
+    (message_id, asset_id)
 VALUES
     (1, 1),
     (1, 2),
@@ -614,12 +667,20 @@ CREATE TABLE Feedback
 (
     id int PRIMARY KEY IDENTITY(1,1) NOT NULL,
     user_id int,
+    subsystem_id int,
     sender_email varchar(100),
     group_id int DEFAULT null,
     status_id int,
     content text,
     send_at datetime,
     updated_at datetime
+);
+
+DROP TABLE IF EXISTS FeedbackAttachment
+CREATE TABLE FeedbackAttachment
+(
+    feedback_id int,
+    asset_id int
 );
 
 
@@ -773,6 +834,9 @@ ALTER TABLE BlockList ADD FOREIGN KEY (user_id_is_blocked) REFERENCES [User] (id
 ALTER TABLE BlockList ADD FOREIGN KEY (dms_id) REFERENCES DirectMessage (id);
 
 ALTER TABLE Feedback ADD FOREIGN KEY (user_id) REFERENCES [User] (id);
+
+ALTER TABLE Feedback ADD FOREIGN KEY (subsystem_id) REFERENCES Subsystem (id);
+
 
 ALTER TABLE Feedback ADD FOREIGN KEY (group_id) REFERENCES FeedbackGroup (id);
 
